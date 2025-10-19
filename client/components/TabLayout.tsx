@@ -96,17 +96,6 @@ export function TabLayout({
             </TabsTrigger>
           )}
 
-          {/* Admin Tab */}
-          {visibleTabs.includes("admin") && (
-            <TabsTrigger
-              value="admin"
-              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-            >
-              <Settings className="h-4 w-4" />
-              <span className="hidden sm:inline">Admin</span>
-            </TabsTrigger>
-          )}
-
           {/* Copilot Tab */}
           {visibleTabs.includes("copilot") && (
             <TabsTrigger
