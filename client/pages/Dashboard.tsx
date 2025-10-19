@@ -66,6 +66,7 @@ export default function Dashboard() {
     setBookings(seedBookings);
     setUsers(seedUsers);
     setBookingRequests(seedBookingRequests);
+    setVouchers(seedVouchers);
   }, [authUser]);
 
   // Sync currentUser wallet and reward points when users array updates
