@@ -11,7 +11,7 @@ import { BookingSuccess } from "@/components/BookingSuccess";
 import { ParkingModal } from "@/components/ParkingModal";
 import { seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking, UserRole } from "@shared/types";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Dashboard() {
@@ -561,36 +561,114 @@ export default function Dashboard() {
 
   const adminContent = (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">4</div>
+            <p className="text-xs text-muted-foreground mt-1">Registered</p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">Total Trips</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">{trips.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Active trips</p>
+            <div className="text-2xl font-bold text-blue-500">{trips.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Platform-wide</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-500">{bookings.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Confirmed bookings</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-500">
               {bookings.reduce((sum, b) => sum + b.total_fare_aed, 0)} AED
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Total collected</p>
+            <p className="text-xs text-muted-foreground mt-1">Collected</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-500">2</div>
+            <p className="text-xs text-muted-foreground mt-1">Online now</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              User Management
+            </CardTitle>
+            <CardDescription>
+              View, manage, and monitor user accounts
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button className="w-full">Manage Users</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5 text-primary" />
+              Policy Control
+            </CardTitle>
+            <CardDescription>
+              Configure rewards, fares, and platform rules
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              Edit Policies
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Analytics
+            </CardTitle>
+            <CardDescription>
+              View platform metrics and performance
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              View Analytics
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-primary" />
+              Moderation
+            </CardTitle>
+            <CardDescription>
+              Handle reports and platform issues
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              View Reports
+            </Button>
           </CardContent>
         </Card>
       </div>
