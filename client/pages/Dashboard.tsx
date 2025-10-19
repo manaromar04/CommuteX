@@ -382,51 +382,28 @@ export default function Dashboard() {
           <CardTitle>Available Trips</CardTitle>
           <CardDescription>Book your next carpool journey</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {trips.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <p>No trips available at the moment.</p>
-            </div>
-          ) : (
-            trips.map((trip) => (
-              <div
-                key={trip.id}
-                className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-primary" />
-                    <span className="font-medium text-foreground">
-                      {trip.origin} → {trip.destination}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {new Date(trip.departure_time).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      {trip.available_seats} seats available
-                    </div>
-                    <span className="font-semibold text-primary">
-                      {trip.fare_aed} AED
-                    </span>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => handleBookTrip(trip)}
-                  disabled={trip.available_seats === 0}
-                  className="ml-4"
-                >
-                  {trip.available_seats > 0 ? "Book" : "Full"}
-                </Button>
-              </div>
-            ))
-          )}
+        <CardContent>
+          <AvailableTrips
+            trips={trips.map((trip) => ({
+              id: trip.id,
+              driver_name: "Driver",
+              driver_rating: 4.8,
+              origin: trip.origin,
+              destination: trip.destination,
+              date: new Date(trip.departure_time).toLocaleDateString(),
+              departure_time: new Date(trip.departure_time).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              distance_km: 40,
+              available_seats: trip.available_seats,
+              booked_seats: 0,
+              car_type: "SEDAN" as const,
+              status: trip.available_seats > 0 ? ("active" as const) : ("full" as const),
+            }))}
+            userBalance={currentUser?.wallet_balance_aed || 0}
+            onBookTrip={handlePassengerBookTrip}
+          />
         </CardContent>
       </Card>
     </div>
