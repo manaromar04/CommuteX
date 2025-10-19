@@ -1249,42 +1249,84 @@ export default function Dashboard() {
       </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Quick Tips</CardTitle>
+          <CardTitle className="text-lg">
+            {userRole === "DRIVER" ? "Driver Benefits" : "Quick Tips"}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-3">
-            <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
-            <div>
-              <p className="font-medium text-sm text-foreground">
-                Earn 80 Points
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Carpool with 3+ passengers
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Star className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-            <div>
-              <p className="font-medium text-sm text-foreground">
-                Earn 40 Points
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Use Park & Ride services
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <Zap className="h-5 w-5 text-blue-500 flex-shrink-0" />
-            <div>
-              <p className="font-medium text-sm text-foreground">
-                Tier Benefits
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Unlock exclusive rewards at each tier
-              </p>
-            </div>
-          </div>
+          {userRole === "DRIVER" ? (
+            <>
+              <div className="flex gap-3">
+                <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    Earn from Passengers
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Get 80% of carpool fares
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Zap className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    ⛽ Fuel Discounts
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Redeem points for ADNOC fuel
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Star className="h-5 w-5 text-green-500 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    Save on Costs
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Salik, RTA, and fuel vouchers
+                  </p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex gap-3">
+                <TrendingUp className="h-5 w-5 text-primary flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    Earn 80 Points
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Carpool with 3+ passengers
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Star className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    Earn 40 Points
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Use Park & Ride services
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Zap className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">
+                    Tier Benefits
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Unlock exclusive rewards at each tier
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
