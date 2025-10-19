@@ -111,4 +111,16 @@ const App = () => (
   </AuthProvider>
 );
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Store root in window to prevent multiple createRoot calls during HMR
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
+
+let root = (window as any).__appRoot;
+if (!root) {
+  root = createRoot(rootElement);
+  (window as any).__appRoot = root;
+}
+
+root.render(<App />);
