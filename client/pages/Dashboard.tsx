@@ -289,6 +289,28 @@ export default function Dashboard() {
     });
   };
 
+  // Handle trip search
+  const handleSearchTrips = (origin: string, destination: string) => {
+    setSearchOrigin(origin);
+    setSearchDestination(destination);
+  };
+
+  const handleClearSearch = () => {
+    setSearchOrigin("");
+    setSearchDestination("");
+  };
+
+  // Filter trips based on search criteria
+  const filteredTrips = trips.filter((trip) => {
+    const matchOrigin = searchOrigin
+      ? trip.origin.toLowerCase().includes(searchOrigin.toLowerCase())
+      : true;
+    const matchDestination = searchDestination
+      ? trip.destination.toLowerCase().includes(searchDestination.toLowerCase())
+      : true;
+    return matchOrigin && matchDestination;
+  });
+
   const passengerContent = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
