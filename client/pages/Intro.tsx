@@ -24,7 +24,7 @@ export default function Intro() {
         <div className="max-w-2xl text-center space-y-8">
           <div className="space-y-3">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Smart Commuting for the GCC
+              Smart Commuting for the UAE
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground">
               Save money, earn rewards, and join a sustainable commuting community
@@ -117,7 +117,7 @@ export default function Intro() {
 
       {/* Footer */}
       <footer className="border-t border-border bg-card/50 backdrop-blur text-center py-6 text-sm text-muted-foreground">
-        <p>CommuteX © 2024 • Making GCC commuting smarter and greener</p>
+        <p>CommuteX © 2024 • Making UAE commuting smarter and greener</p>
       </footer>
     </div>
   );

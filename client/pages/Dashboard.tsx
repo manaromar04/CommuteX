@@ -265,7 +265,7 @@ export default function Dashboard() {
       <Card>
         <CardHeader>
           <CardTitle>Smart Hubs</CardTitle>
-          <CardDescription>Park & Ride locations across GCC</CardDescription>
+          <CardDescription>Park & Ride locations across UAE</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
