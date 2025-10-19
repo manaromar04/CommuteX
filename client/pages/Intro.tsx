@@ -93,18 +93,14 @@ export default function Intro() {
             <p className="text-sm text-muted-foreground mb-4">
               Try the app with demo accounts:
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div className="bg-card/50 backdrop-blur rounded-lg p-3 border border-border">
-                <p className="font-medium text-foreground">Huda</p>
-                <p className="text-xs text-muted-foreground">Passenger • SILVER Tier</p>
-              </div>
-              <div className="bg-card/50 backdrop-blur rounded-lg p-3 border border-border">
-                <p className="font-medium text-foreground">Rami</p>
-                <p className="text-xs text-muted-foreground">Driver • PLATINUM Tier</p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
               <div className="bg-card/50 backdrop-blur rounded-lg p-3 border border-border">
                 <p className="font-medium text-foreground">Salma</p>
                 <p className="text-xs text-muted-foreground">Admin • GOLD Tier</p>
+              </div>
+              <div className="bg-card/50 backdrop-blur rounded-lg p-3 border border-border">
+                <p className="font-medium text-foreground">Huda</p>
+                <p className="text-xs text-muted-foreground">Passenger • SILVER Tier</p>
               </div>
               <div className="bg-card/50 backdrop-blur rounded-lg p-3 border border-border">
                 <p className="font-medium text-foreground">Manar</p>
