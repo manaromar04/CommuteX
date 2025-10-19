@@ -27,6 +27,8 @@ export default function Dashboard() {
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
   const [selectedHub, setSelectedHub] = useState<any>(null);
   const [isParkingModalOpen, setIsParkingModalOpen] = useState(false);
+  const [forecastHour, setForecastHour] = useState(7);
+  const [selectedCorridor, setSelectedCorridor] = useState<string | null>(null);
 
   useEffect(() => {
     // Initialize with authenticated user
@@ -485,74 +487,298 @@ export default function Dashboard() {
     setTimeout(() => notification.remove(), 3000);
   };
 
+  // Mock corridor data
+  const corridors = [
+    {
+      id: "E11_SZR",
+      name: "E11 - Sheikh Zayed Road",
+      hours: {
+        7: { speed: 45, jamFactor: 8, volume: 85 },
+        8: { speed: 35, jamFactor: 9, volume: 95 },
+        9: { speed: 40, jamFactor: 8, volume: 90 },
+        10: { speed: 60, jamFactor: 4, volume: 50 },
+        11: { speed: 70, jamFactor: 2, volume: 30 },
+        12: { speed: 65, jamFactor: 3, volume: 40 },
+        17: { speed: 50, jamFactor: 7, volume: 75 },
+        18: { speed: 35, jamFactor: 9, volume: 92 },
+      },
+    },
+    {
+      id: "E311",
+      name: "E311 - Emirates Highway",
+      hours: {
+        7: { speed: 55, jamFactor: 6, volume: 70 },
+        8: { speed: 40, jamFactor: 8, volume: 85 },
+        9: { speed: 50, jamFactor: 7, volume: 80 },
+        10: { speed: 75, jamFactor: 2, volume: 25 },
+        11: { speed: 80, jamFactor: 1, volume: 15 },
+        12: { speed: 75, jamFactor: 2, volume: 20 },
+        17: { speed: 60, jamFactor: 5, volume: 65 },
+        18: { speed: 45, jamFactor: 7, volume: 78 },
+      },
+    },
+    {
+      id: "AlIttihad",
+      name: "Al Ittihad Road",
+      hours: {
+        7: { speed: 50, jamFactor: 7, volume: 78 },
+        8: { speed: 38, jamFactor: 8, volume: 88 },
+        9: { speed: 45, jamFactor: 7, volume: 85 },
+        10: { speed: 68, jamFactor: 3, volume: 35 },
+        11: { speed: 72, jamFactor: 2, volume: 28 },
+        12: { speed: 70, jamFactor: 2, volume: 32 },
+        17: { speed: 55, jamFactor: 6, volume: 72 },
+        18: { speed: 40, jamFactor: 8, volume: 85 },
+      },
+    },
+  ];
+
+  const currentHourData = corridors.map((corridor) => ({
+    ...corridor,
+    current: corridor.hours[forecastHour as keyof typeof corridor.hours] || {
+      speed: 60,
+      jamFactor: 3,
+      volume: 50,
+    },
+  }));
+
+  const getJamColor = (jamFactor: number) => {
+    if (jamFactor >= 8) return "bg-red-600";
+    if (jamFactor >= 6) return "bg-orange-500";
+    if (jamFactor >= 4) return "bg-yellow-500";
+    return "bg-green-500";
+  };
+
+  const getRecommendation = () => {
+    const avgJam = currentHourData.reduce((sum, c) => sum + c.current.jamFactor, 0) / currentHourData.length;
+
+    if (avgJam >= 7) {
+      return {
+        type: "peak",
+        title: "Peak Hours Alert",
+        message: `Activate carpool bonuses + 20% toll discount on ${currentHourData.find(c => c.current.jamFactor === Math.max(...currentHourData.map(x => x.current.jamFactor)))?.name}`,
+        bgColor: "bg-red-50 dark:bg-red-950",
+        textColor: "text-red-900 dark:text-red-200",
+        borderColor: "border-red-200 dark:border-red-800",
+        iconColor: "text-red-600 dark:text-red-400",
+      };
+    }
+
+    if (avgJam >= 4 && avgJam < 7) {
+      return {
+        type: "mid",
+        title: "Mid-Jam Hours",
+        message: "Double Green Points for Park & Ride to avoid congestion",
+        bgColor: "bg-yellow-50 dark:bg-yellow-950",
+        textColor: "text-yellow-900 dark:text-yellow-200",
+        borderColor: "border-yellow-200 dark:border-yellow-800",
+        iconColor: "text-yellow-600 dark:text-yellow-400",
+      };
+    }
+
+    return {
+      type: "normal",
+      title: "Normal Operations",
+      message: "Good time to travel with optimal traffic conditions across corridors",
+      bgColor: "bg-green-50 dark:bg-green-950",
+      textColor: "text-green-900 dark:text-green-200",
+      borderColor: "border-green-200 dark:border-green-800",
+      iconColor: "text-green-600 dark:text-green-400",
+    };
+  };
+
+  const recommendation = getRecommendation();
+
+  const worstCorridor = currentHourData.reduce((prev, current) =>
+    current.current.jamFactor > prev.current.jamFactor ? current : prev
+  );
+
+  const cellsWithHighJam = currentHourData.filter(c => c.current.jamFactor >= 7).length;
+  const avgSpeed = Math.round(
+    currentHourData.reduce((sum, c) => sum + c.current.speed, 0) / currentHourData.length
+  );
+
   const forecastContent = (
     <div className="space-y-6">
+      {/* Time Slider */}
       <Card>
         <CardHeader>
-          <CardTitle>Forecast Map</CardTitle>
-          <CardDescription>AI-powered trip demand forecast</CardDescription>
+          <CardTitle>Time Slider</CardTitle>
+          <CardDescription>View traffic predictions for different hours of the day</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            {[
-              {
-                time: "Now - 2 Hours",
-                demand: "HIGH",
-                color: "bg-red-500",
-                trips: 42,
-              },
-              {
-                time: "2 - 4 Hours",
-                demand: "MEDIUM",
-                color: "bg-yellow-500",
-                trips: 28,
-              },
-              {
-                time: "4 - 6 Hours",
-                demand: "LOW",
-                color: "bg-green-500",
-                trips: 12,
-              },
-            ].map((period) => (
-              <div key={period.time} className="space-y-2">
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-muted-foreground min-w-fit">7 AM</span>
+            <input
+              type="range"
+              min="7"
+              max="18"
+              value={forecastHour}
+              onChange={(e) => setForecastHour(parseInt(e.target.value))}
+              className="flex-1 cursor-pointer h-2 bg-border rounded-lg appearance-none accent-primary"
+            />
+            <span className="text-sm font-medium text-muted-foreground min-w-fit">6 PM</span>
+          </div>
+          <div className="text-center">
+            <span className="text-lg font-bold text-primary">
+              {String(forecastHour).padStart(2, "0")}:00
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* KPI Display */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Worst Corridor</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-bold text-red-600">
+              {worstCorridor.name}
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Jam Factor: {worstCorridor.current.jamFactor}/10
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Average Speed</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-bold text-primary">
+              {avgSpeed} kph
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Across all corridors
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">High Congestion</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg font-bold text-orange-600">
+              {cellsWithHighJam} corridor{cellsWithHighJam !== 1 ? "s" : ""}
+            </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Jam Factor ≥ 7/10
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Dynamic Recommendations */}
+      <Card className={`border ${recommendation.borderColor}`}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <AlertCircle className={`h-5 w-5 ${recommendation.iconColor}`} />
+            {recommendation.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className={`p-3 rounded text-sm ${recommendation.bgColor} ${recommendation.textColor}`}>
+          {recommendation.message}
+        </CardContent>
+      </Card>
+
+      {/* Heatmap & Traffic Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Corridor Heat Map & Traffic Data</CardTitle>
+          <CardDescription>Real-time congestion levels and metrics for key corridors</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {currentHourData.map((corridor) => (
+            <div
+              key={corridor.id}
+              onClick={() => setSelectedCorridor(selectedCorridor === corridor.id ? null : corridor.id)}
+              className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                selectedCorridor === corridor.id
+                  ? "bg-muted border-primary ring-2 ring-primary/20"
+                  : "border-border hover:bg-muted/50"
+              }`}
+            >
+              <div className="space-y-3">
+                {/* Corridor Header */}
                 <div className="flex items-center justify-between">
-                  <span className="font-medium text-foreground">{period.time}</span>
+                  <h4 className="font-semibold text-foreground">{corridor.name}</h4>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
-                      {period.trips} trips expected
-                    </span>
-                    <Badge className={`${period.color} text-white`}>
-                      {period.demand}
-                    </Badge>
+                    <div
+                      className={`${getJamColor(corridor.current.jamFactor)} w-6 h-6 rounded-full flex items-center justify-center`}
+                    >
+                      <span className="text-white text-xs font-bold">
+                        {corridor.current.jamFactor}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <div className="w-full bg-border rounded-full h-3">
-                  <div
-                    className={`${period.color} h-3 rounded-full transition-all`}
-                    style={{ width: `${(period.trips / 50) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
 
-          {/* Forecast Insights */}
-          <div className="border-t border-border pt-6 space-y-3">
-            <h3 className="font-semibold text-foreground">Forecast Insights</h3>
-            <div className="space-y-2">
-              <div className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-blue-900 dark:text-blue-200">
-                  <strong>Peak Hours:</strong> High demand expected between 7-9 AM and 5-7 PM. Book early for better availability.
-                </p>
-              </div>
-              <div className="flex gap-3 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-green-900 dark:text-green-200">
-                  <strong>Best Time:</strong> Mid-day (10 AM - 3 PM) offers the most flexible booking options.
-                </p>
+                {/* Heatmap Bar */}
+                <div className="space-y-1">
+                  <div className="text-xs text-muted-foreground">Congestion Level</div>
+                  <div className="w-full bg-border rounded-full h-4 overflow-hidden">
+                    <div
+                      className={`h-4 rounded-full transition-all ${getJamColor(corridor.current.jamFactor)}`}
+                      style={{ width: `${(corridor.current.jamFactor / 10) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Traffic Metrics */}
+                {selectedCorridor === corridor.id && (
+                  <div className="mt-3 pt-3 border-t border-border space-y-3">
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                        <p className="text-muted-foreground text-xs">Speed</p>
+                        <p className="text-lg font-bold text-blue-600">{corridor.current.speed} kph</p>
+                      </div>
+                      <div className="p-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg">
+                        <p className="text-muted-foreground text-xs">Jam Factor</p>
+                        <p className="text-lg font-bold text-orange-600">{corridor.current.jamFactor}/10</p>
+                      </div>
+                      <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                        <p className="text-muted-foreground text-xs">Volume</p>
+                        <p className="text-lg font-bold text-purple-600">{corridor.current.volume}%</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground italic">
+                      Click to hide detailed metrics
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Forecast Insights */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Traffic Insights</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-blue-900 dark:text-blue-200">
+              <strong>Peak Hours:</strong> High demand expected between 7-9 AM and 5-7 PM. Book early for better availability.
+            </p>
+          </div>
+          <div className="flex gap-3 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-green-900 dark:text-green-200">
+              <strong>Best Time:</strong> Mid-day (10 AM - 3 PM) offers the most flexible booking options and lower fares.
+            </p>
+          </div>
+          <div className="flex gap-3 p-3 bg-purple-50 dark:bg-purple-950 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-purple-900 dark:text-purple-200">
+              <strong>Smart Route:</strong> Al Ittihad Road shows better conditions at this time. Consider alternative routes.
+            </p>
           </div>
         </CardContent>
       </Card>
