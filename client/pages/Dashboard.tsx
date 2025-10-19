@@ -1428,6 +1428,7 @@ export default function Dashboard() {
         onOpenChange={setIsRedeemVouchersModalOpen}
         userPoints={currentUser?.reward_points || 0}
         onRedeem={handleRedeemVoucher}
+        isDriver={userRole === "DRIVER"}
       />
     </div>
   );
