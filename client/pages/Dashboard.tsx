@@ -768,6 +768,52 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Active Driver Vouchers */}
+      {vouchers.filter((v) => v.user_id === currentUser?.id && v.status === "ACTIVE").length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🎟️ Your Active Vouchers</CardTitle>
+            <CardDescription>Driver benefit vouchers and discounts</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {vouchers
+                .filter((v) => v.user_id === currentUser?.id && v.status === "ACTIVE")
+                .map((voucher) => (
+                  <VoucherCard key={voucher.id} voucher={voucher} />
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Redeem Vouchers for Drivers */}
+      <Card className="border-2 border-dashed">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5" />
+            Redeem Points for Fuel & Parking
+          </CardTitle>
+          <CardDescription>
+            Get Salik, RTA, and ADNOC fuel discounts with your reward points
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              You have <strong>{currentUser?.reward_points} points</strong> available to redeem
+            </p>
+            <Button
+              onClick={() => setIsRedeemVouchersModalOpen(true)}
+              className="w-full"
+              size="lg"
+            >
+              Browse Driver Vouchers
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
