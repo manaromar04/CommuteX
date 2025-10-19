@@ -203,12 +203,9 @@ export default function Dashboard() {
         created_at: new Date(),
       };
 
-      // Passenger already paid when booking, just confirm driver's commission
-      const updatedUsers = users.map((u) => {
-        // Driver wallet already credited, no changes needed on confirm
-        // (passenger paid when they made the booking request)
-        return u;
-      });
+      // Note: Passenger wallet already deducted when they made the booking
+      // Driver wallet already credited when booking was made
+      // Just update trip availability and mark booking as confirmed
 
       // Update trip
       const updatedTrip = {
@@ -216,7 +213,6 @@ export default function Dashboard() {
         available_seats: trip.available_seats - seats,
       };
 
-      setUsers(updatedUsers);
       setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
       setBookings([...bookings, newBooking]);
       setBookingRequests(
@@ -227,7 +223,7 @@ export default function Dashboard() {
 
       toast({
         title: "Booking Confirmed",
-        description: `Successfully booked ${seats} seat${seats > 1 ? "s" : ""}`,
+        description: `Confirmed ${seats} seat${seats > 1 ? "s" : ""} for ${totalFare} AED`,
       });
     }
   };
