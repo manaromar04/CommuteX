@@ -82,8 +82,6 @@ export default function Dashboard() {
       setActiveTab("passenger");
     } else if (userRole === "DRIVER") {
       setActiveTab("driver");
-    } else if (userRole === "ADMIN") {
-      setActiveTab("admin");
     }
   }, [userRole]);
 
