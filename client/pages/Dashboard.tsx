@@ -179,16 +179,17 @@ export default function Dashboard() {
       const bookingId = bookingIdOrSeats;
       const driverCommission = totalFare * 0.8; // Driver gets 80% of fare
 
-      const updatedUser = {
-        ...currentUser,
-        wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
-        reward_points: currentUser.reward_points + (seats >= 3 ? 80 : 0),
-      };
+      const trip = trips.find((t) => t.id === tripId);
+      if (!trip) return;
+
+      // Find the booking request to get passenger info
+      const bookingReq = bookingRequests.find((br) => br.id === bookingId);
+      if (!bookingReq) return;
 
       const newBooking: Booking = {
         id: bookingId,
         trip_id: tripId,
-        passenger_id: currentUser.id,
+        passenger_id: bookingReq.passengerId,
         seats_booked: seats,
         total_fare_aed: totalFare,
         status: "CONFIRMED",
@@ -196,30 +197,34 @@ export default function Dashboard() {
         created_at: new Date(),
       };
 
-      // Update passenger wallet
-      setCurrentUser(updatedUser);
-
-      const trip = trips.find((t) => t.id === tripId);
-      if (trip) {
-        const updatedTrip = {
-          ...trip,
-          available_seats: trip.available_seats - seats,
-        };
-        setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
-
+      // Update both passenger and driver wallets in users array
+      const updatedUsers = users.map((u) => {
+        // Deduct from passenger's wallet
+        if (u.id === bookingReq.passengerId) {
+          return {
+            ...u,
+            wallet_balance_aed: u.wallet_balance_aed - totalFare,
+            reward_points: u.reward_points + (seats >= 3 ? 80 : 0),
+          };
+        }
         // Credit driver's wallet
-        const updatedUsers = users.map((u) => {
-          if (u.id === trip.driver_id) {
-            return {
-              ...u,
-              wallet_balance_aed: u.wallet_balance_aed + driverCommission,
-            };
-          }
-          return u;
-        });
-        setUsers(updatedUsers);
-      }
+        if (u.id === trip.driver_id) {
+          return {
+            ...u,
+            wallet_balance_aed: u.wallet_balance_aed + driverCommission,
+          };
+        }
+        return u;
+      });
 
+      // Update trip
+      const updatedTrip = {
+        ...trip,
+        available_seats: trip.available_seats - seats,
+      };
+
+      setUsers(updatedUsers);
+      setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
       setBookings([...bookings, newBooking]);
       setBookingRequests(
         bookingRequests.map((br) =>
