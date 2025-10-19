@@ -10,12 +10,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, X, Clock, Users } from "lucide-react";
 
-interface BookingRequest {
+export interface BookingRequest {
   id: string;
   passengerName: string;
+  passengerId: string;
+  tripId: string;
   tripOrigin: string;
   tripDestination: string;
   seats: number;
+  farePerPassenger: number;
+  totalCost: number;
   status: "pending" | "confirmed" | "rejected";
   requestedAt: string;
 }
@@ -23,38 +27,61 @@ interface BookingRequest {
 interface BookingRequestsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onConfirmBooking?: (bookingId: string) => void;
+  onDeclineBooking?: (bookingId: string) => void;
+  bookingRequests?: BookingRequest[];
 }
 
-export function BookingRequestsModal({ open, onOpenChange }: BookingRequestsModalProps) {
-  const bookingRequests: BookingRequest[] = [
+export function BookingRequestsModal({
+  open,
+  onOpenChange,
+  onConfirmBooking,
+  onDeclineBooking,
+  bookingRequests: providedRequests,
+}: BookingRequestsModalProps) {
+  const defaultRequests: BookingRequest[] = [
     {
       id: "req_001",
       passengerName: "Huda Ahmed",
+      passengerId: "passenger_001",
+      tripId: "trip_001",
       tripOrigin: "Sharjah",
       tripDestination: "Dubai",
       seats: 2,
+      farePerPassenger: 15.75,
+      totalCost: 31.5,
       status: "pending",
       requestedAt: "2024-01-15 08:30",
     },
     {
       id: "req_002",
       passengerName: "Fatima Mohammed",
-      tripOrigin: "Ajman",
-      tripDestination: "Dubai Mall",
+      passengerId: "passenger_002",
+      tripId: "trip_001",
+      tripOrigin: "Sharjah",
+      tripDestination: "Dubai",
       seats: 1,
+      farePerPassenger: 15.75,
+      totalCost: 15.75,
       status: "pending",
       requestedAt: "2024-01-15 07:45",
     },
     {
       id: "req_003",
       passengerName: "Layla Hassan",
+      passengerId: "passenger_003",
+      tripId: "trip_001",
       tripOrigin: "Sharjah",
       tripDestination: "Dubai",
-      seats: 3,
+      seats: 1,
+      farePerPassenger: 15.75,
+      totalCost: 15.75,
       status: "confirmed",
       requestedAt: "2024-01-14 18:20",
     },
   ];
+
+  const bookingRequests = providedRequests || defaultRequests;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -115,13 +142,35 @@ export function BookingRequestsModal({ open, onOpenChange }: BookingRequestsModa
                       </span>
                     </div>
 
+                    {/* Booking Summary */}
+                    <div className="grid grid-cols-3 gap-2 text-xs bg-muted p-2 rounded">
+                      <div>
+                        <p className="text-muted-foreground">Fare/Seat</p>
+                        <p className="font-semibold">{request.farePerPassenger} AED</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Seats</p>
+                        <p className="font-semibold">{request.seats}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Total</p>
+                        <p className="font-semibold text-green-600">
+                          {request.totalCost.toFixed(2)} AED
+                        </p>
+                      </div>
+                    </div>
+
                     {request.status === "pending" && (
                       <div className="flex gap-2 pt-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="flex-1 gap-2"
-                          onClick={() => {}}
+                          className="flex-1 gap-2 text-red-600 dark:text-red-400 hover:text-red-700"
+                          onClick={() => {
+                            if (onDeclineBooking) {
+                              onDeclineBooking(request.id);
+                            }
+                          }}
                         >
                           <X className="h-4 w-4" />
                           Decline
@@ -129,7 +178,11 @@ export function BookingRequestsModal({ open, onOpenChange }: BookingRequestsModa
                         <Button
                           size="sm"
                           className="flex-1 gap-2"
-                          onClick={() => {}}
+                          onClick={() => {
+                            if (onConfirmBooking) {
+                              onConfirmBooking(request.id);
+                            }
+                          }}
                         >
                           <CheckCircle className="h-4 w-4" />
                           Confirm
