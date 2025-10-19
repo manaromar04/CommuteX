@@ -1248,6 +1248,19 @@ export default function Dashboard() {
       <BookingRequestsModal
         open={isBookingRequestsModalOpen}
         onOpenChange={setIsBookingRequestsModalOpen}
+        bookingRequests={bookingRequests}
+        onConfirmBooking={(bookingId) => {
+          const req = bookingRequests.find((r) => r.id === bookingId);
+          if (req) {
+            handleConfirmBooking(
+              bookingId,
+              req.tripId,
+              req.seats,
+              req.totalCost
+            );
+          }
+        }}
+        onDeclineBooking={handleDeclineBooking}
       />
 
       <EarningsModal
@@ -1261,6 +1274,38 @@ export default function Dashboard() {
         onTripDeleted={(tripId) => {
           setTrips(trips.filter((t) => t.id !== tripId));
         }}
+      />
+
+      <TripCompletionModal
+        open={isTripCompletionModalOpen}
+        onOpenChange={setIsTripCompletionModalOpen}
+        trip={
+          selectedTripForCompletion
+            ? {
+                id: selectedTripForCompletion.id,
+                origin: selectedTripForCompletion.origin,
+                destination: selectedTripForCompletion.destination,
+                carType: "SEDAN",
+                passengers: bookings
+                  .filter((b) => b.trip_id === selectedTripForCompletion.id)
+                  .map((b) => ({
+                    passengerId: b.passenger_id,
+                    passengerName: "Passenger",
+                    seatsBooked: b.seats_booked,
+                    farePerPassenger: b.total_fare_aed / b.seats_booked,
+                    totalFare: b.total_fare_aed,
+                  })),
+                driverEarnings: bookings
+                  .filter((b) => b.trip_id === selectedTripForCompletion.id)
+                  .reduce((sum, b) => sum + b.total_fare_aed, 0),
+                rewardPoints: bookings.filter((b) => b.trip_id === selectedTripForCompletion.id)
+                  .length >= 3
+                  ? 80
+                  : 0,
+              }
+            : undefined
+        }
+        onCompleteTrip={handleCompleteTrip}
       />
     </div>
   );
