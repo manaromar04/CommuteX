@@ -20,7 +20,7 @@ import { seedTrips, seedBookings, seedUsers, seedBookingRequests, seedVouchers }
 import { User, Trip, Booking, UserRole, Voucher } from "@shared/types";
 import { RedeemVouchersModal } from "@/components/RedeemVouchersModal";
 import { VoucherCard } from "@/components/VoucherCard";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings, Tag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { calculateCarpoolRewards } from "@/lib/rewards";
 import { settleTripPayments, getTripSettlementSummary } from "@/lib/tripCompletion";
