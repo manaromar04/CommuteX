@@ -261,6 +261,9 @@ export default function Dashboard() {
       return;
     }
 
+    const rewardPoints = seats >= 3 ? 80 : 40;
+    const driverCommission = totalFare * 0.8;
+
     // Create booking request
     const bookingRequest: BookingRequest = {
       id: `req_${Date.now()}`,
@@ -276,12 +279,41 @@ export default function Dashboard() {
       requestedAt: new Date().toLocaleString(),
     };
 
+    // Immediately deduct passenger's wallet and add reward points
+    const updatedPassenger = {
+      ...currentUser,
+      wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
+      reward_points: currentUser.reward_points + rewardPoints,
+    };
+
+    // Update passenger in users array
+    const updatedUsers = users.map((u) => {
+      if (u.id === currentUser.id) {
+        return {
+          ...u,
+          wallet_balance_aed: u.wallet_balance_aed - totalFare,
+          reward_points: u.reward_points + rewardPoints,
+        };
+      }
+      // Also credit driver if driver confirms later
+      if (u.id === trip.driver_id) {
+        return {
+          ...u,
+          wallet_balance_aed: u.wallet_balance_aed + driverCommission,
+        };
+      }
+      return u;
+    });
+
+    // Update state
+    setCurrentUser(updatedPassenger);
+    setUsers(updatedUsers);
     setBookingRequests((prev) => [...prev, bookingRequest]);
 
-    // Show booking request created notification
+    // Show booking confirmation notification
     toast({
-      title: "Booking Request Sent",
-      description: `Request for ${seats} seat${seats > 1 ? "s" : ""} (${totalFare} AED) sent to driver. Awaiting confirmation.`,
+      title: "Booking Confirmed! 🎉",
+      description: `You booked ${seats} seat${seats > 1 ? "s" : ""} for ${totalFare} AED. Earned ${rewardPoints} reward points!`,
     });
   };
 
