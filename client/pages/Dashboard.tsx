@@ -382,6 +382,64 @@ export default function Dashboard() {
     setSearchDestination("");
   };
 
+  // Handle voucher redemption
+  const handleRedeemVoucher = (service: "SALIK" | "RTA", pointsCost: number, discount: number) => {
+    if (!currentUser || currentUser.reward_points < pointsCost) {
+      toast({
+        title: "Insufficient Points",
+        description: `You need ${pointsCost} points but only have ${currentUser?.reward_points}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Generate voucher code
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const randomStr = () => Array.from({ length: 5 }, () =>
+      chars.charAt(Math.floor(Math.random() * chars.length))
+    ).join("");
+    const code = `CMTX-${service}-${randomStr()}`;
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 30);
+
+    const newVoucher: Voucher = {
+      id: `voucher_${Date.now()}`,
+      user_id: currentUser.id,
+      service,
+      code,
+      points_cost: pointsCost,
+      discount_aed: discount,
+      status: "ACTIVE",
+      created_at: new Date(),
+      expires_at: expiresAt,
+      description: `${discount} AED discount on ${service === "SALIK" ? "Salik tolls" : "RTA parking"}`,
+    };
+
+    // Deduct points and add voucher
+    const updatedUser = {
+      ...currentUser,
+      reward_points: currentUser.reward_points - pointsCost,
+    };
+
+    setCurrentUser(updatedUser);
+    setUsers(
+      users.map((u) =>
+        u.id === currentUser.id
+          ? { ...u, reward_points: u.reward_points - pointsCost }
+          : u
+      )
+    );
+    setVouchers([...vouchers, newVoucher]);
+
+    toast({
+      title: "Voucher Redeemed! 🎉",
+      description: `You've earned a ${discount} AED ${service} voucher. Code: ${code}`,
+    });
+
+    setIsRedeemVouchersModalOpen(false);
+  };
+
   // Filter trips based on search criteria
   const filteredTrips = trips.filter((trip) => {
     const matchOrigin = searchOrigin
