@@ -723,24 +723,38 @@ export default function Dashboard() {
     </div>
   );
 
-  const handleParkingBooking = (hubConfig?: typeof HUBS[0]) => {
+  const handleParkingBooking = (hubConfig?: typeof HUBS[0], pointsCost?: number, bonusPoints?: number) => {
     if (!selectedHub || !currentUser || !hubConfig) return;
 
-    // Points are deducted during modal confirmation
-    // Update user's reward points with bonus if using public transport
-    const bonusPoints = 50; // This would come from the modal state
+    const deductedPoints = pointsCost || hubConfig.parking_points_cost;
+    const bonus = bonusPoints || 0;
+    const finalPoints = currentUser.reward_points - deductedPoints + bonus;
+
     const updatedUser = {
       ...currentUser,
-      reward_points: Math.max(0, currentUser.reward_points - hubConfig.parking_points_cost + bonusPoints),
+      reward_points: Math.max(0, finalPoints),
     };
 
     setCurrentUser(updatedUser);
+
+    // Also update in users array for consistency
+    const updatedUsers = users.map((u) =>
+      u.id === currentUser.id
+        ? { ...u, reward_points: Math.max(0, finalPoints) }
+        : u
+    );
+    setUsers(updatedUsers);
+
     setIsParkingModalOpen(false);
     setSelectedHubConfig(null);
 
+    const description = bonus > 0
+      ? `${deductedPoints} points deducted, ${bonus} bonus points earned. New balance: ${updatedUser.reward_points} points.`
+      : `${deductedPoints} reward points deducted. New balance: ${updatedUser.reward_points} points.`;
+
     toast({
       title: "Parking Booked Successfully!",
-      description: `${hubConfig.parking_points_cost} reward points deducted. New balance: ${updatedUser.reward_points} points.`,
+      description,
     });
   };
 
