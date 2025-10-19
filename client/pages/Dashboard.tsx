@@ -10,13 +10,13 @@ import { BookingModal } from "@/components/BookingModal";
 import { BookingSuccess } from "@/components/BookingSuccess";
 import { ParkingModal } from "@/components/ParkingModal";
 import { seedTrips, seedBookings } from "@shared/seeds";
-import { User, Trip, Booking } from "@shared/types";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, LogOut } from "lucide-react";
+import { User, Trip, Booking, UserRole } from "@shared/types";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user: authUser, logout } = useAuth();
+  const { user: authUser, logout, userRole } = useAuth();
   const [activeTab, setActiveTab] = useState("passenger");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -36,6 +36,17 @@ export default function Dashboard() {
     setTrips(seedTrips);
     setBookings(seedBookings);
   }, [authUser]);
+
+  // Set default active tab based on role
+  useEffect(() => {
+    if (userRole === "PASSENGER") {
+      setActiveTab("passenger");
+    } else if (userRole === "DRIVER") {
+      setActiveTab("driver");
+    } else if (userRole === "ADMIN") {
+      setActiveTab("passenger");
+    }
+  }, [userRole]);
 
   const handleLogout = () => {
     logout();
