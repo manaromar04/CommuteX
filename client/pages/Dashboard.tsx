@@ -673,21 +673,21 @@ export default function Dashboard() {
 
                   {/* Availability */}
                   <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
+                    <div className="flex justify-between items-center gap-2 text-xs flex-wrap">
                       <span className="text-muted-foreground">Availability</span>
-                      <span className="font-semibold text-foreground">
+                      <span className="font-semibold text-foreground whitespace-nowrap">
                         {hub.available}/{hub.capacity}
                       </span>
                     </div>
-                    <div className="w-full bg-border rounded-full h-2">
+                    <div className="w-full bg-border rounded-full h-2 overflow-hidden">
                       <div
-                        className={`h-2 rounded-full ${
+                        className={`h-2 rounded-full transition-all ${
                           (hub.available / hub.capacity) * 100 > 50
                             ? "bg-green-500"
                             : "bg-orange-500"
                         }`}
                         style={{
-                          width: `${(hub.available / hub.capacity) * 100}%`,
+                          width: `${Math.min((hub.available / hub.capacity) * 100, 100)}%`,
                         }}
                       />
                     </div>
