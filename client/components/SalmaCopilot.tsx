@@ -97,6 +97,13 @@ const conversationFlow: Record<ConversationStep, StepConfig> = {
       { label: "← Back to Main Menu", value: "main" },
     ],
   },
+  rewards_redeem: {
+    message: "Excellent! You can redeem your points for amazing discounts:\n\n🚗 Salik Toll Discount\n150 points → 50 AED off\n\n🅿️ RTA Parking Discount\n120 points → 30 AED off\n\nGet instant voucher codes to use on their apps!",
+    options: [
+      { label: "More about rewards", value: "rewards_points" },
+      { label: "← Back to Main Menu", value: "main" },
+    ],
+  },
   hubs_help: {
     message: "What would you like to know about Smart Hubs?",
     options: [
