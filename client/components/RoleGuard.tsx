@@ -41,8 +41,6 @@ export function RoleProtectedRoute({
       return <Navigate to="/passenger/home" replace />;
     } else if (userRole === "DRIVER") {
       return <Navigate to="/driver/home" replace />;
-    } else if (userRole === "ADMIN") {
-      return <Navigate to="/admin/dashboard" replace />;
     }
     return <Navigate to="/login" replace />;
   }
