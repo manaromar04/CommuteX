@@ -53,6 +53,8 @@ export default function Dashboard() {
   const [selectedHubConfig, setSelectedHubConfig] = useState<typeof HUBS[0] | null>(null);
   const [searchOrigin, setSearchOrigin] = useState("");
   const [searchDestination, setSearchDestination] = useState("");
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [isRedeemVouchersModalOpen, setIsRedeemVouchersModalOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
