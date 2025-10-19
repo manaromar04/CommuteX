@@ -10,7 +10,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AlertCircle, CheckCircle } from "lucide-react";
+import {
+  calculateCompleteFare,
+  CAR_TYPES,
+  type CarType,
+} from "@/lib/pricing";
 
 interface PostTripModalProps {
   open: boolean;
@@ -23,17 +35,35 @@ export function PostTripModal({ open, onOpenChange, onTripCreated }: PostTripMod
     origin: "",
     destination: "",
     departureTime: "",
-    fare: "",
+    distance: "",
     seats: "",
     date: "",
+    carType: "SEDAN" as CarType,
   });
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Calculate fare when distance, seats, or carType changes
+  const calculatedFare =
+    formData.distance && formData.seats
+      ? calculateCompleteFare(
+          formData.carType,
+          parseFloat(formData.distance) || 0,
+          parseInt(formData.seats) || 1
+        )
+      : null;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleCarTypeChange = (value: CarType) => {
+    setFormData((prev) => ({
+      ...prev,
+      carType: value,
     }));
   };
 
@@ -45,8 +75,12 @@ export function PostTripModal({ open, onOpenChange, onTripCreated }: PostTripMod
       origin: formData.origin,
       destination: formData.destination,
       departure_time: formData.departureTime,
-      fare_aed: parseFloat(formData.fare) || 0,
+      distance_km: parseFloat(formData.distance) || 0,
+      fare_per_passenger: calculatedFare?.discountedFare || 0,
+      fare_base_per_passenger: calculatedFare?.farePerPassenger || 0,
+      total_fare: calculatedFare?.totalFare || 0,
       available_seats: parseInt(formData.seats) || 0,
+      car_type: formData.carType,
       date: formData.date,
       driver_id: "driver_001",
       status: "active",
@@ -63,9 +97,10 @@ export function PostTripModal({ open, onOpenChange, onTripCreated }: PostTripMod
         origin: "",
         destination: "",
         departureTime: "",
-        fare: "",
+        distance: "",
         seats: "",
         date: "",
+        carType: "SEDAN",
       });
       setShowSuccess(false);
       onOpenChange(false);
@@ -150,40 +185,97 @@ export function PostTripModal({ open, onOpenChange, onTripCreated }: PostTripMod
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="fare">Fare per seat (AED)</Label>
+                  <Label htmlFor="carType">Vehicle Type</Label>
+                  <Select value={formData.carType} onValueChange={handleCarTypeChange}>
+                    <SelectTrigger id="carType">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SEDAN">Sedan</SelectItem>
+                      <SelectItem value="SUV">SUV</SelectItem>
+                      <SelectItem value="MINIVAN">Minivan</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="distance">Distance (km)</Label>
                   <Input
-                    id="fare"
-                    name="fare"
+                    id="distance"
+                    name="distance"
                     type="number"
                     placeholder="0"
                     min="0"
-                    step="0.01"
-                    value={formData.fare}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="seats">Available Seats</Label>
-                  <Input
-                    id="seats"
-                    name="seats"
-                    type="number"
-                    placeholder="0"
-                    min="1"
-                    max="6"
-                    value={formData.seats}
+                    step="0.1"
+                    value={formData.distance}
                     onChange={handleInputChange}
                     required
                   />
                 </div>
               </div>
+
+              <div>
+                <Label htmlFor="seats">Available Seats</Label>
+                <Input
+                  id="seats"
+                  name="seats"
+                  type="number"
+                  placeholder="0"
+                  min="1"
+                  max="6"
+                  value={formData.seats}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
             </div>
+
+            {/* Fare Breakdown */}
+            {calculatedFare && (
+              <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">RTA Fare Calculation</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Base Fare + Distance:</span>
+                    <span className="font-medium">{calculatedFare.totalFare} AED</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      Per Passenger ({formData.seats} seats):
+                    </span>
+                    <span className="font-medium">{calculatedFare.farePerPassenger} AED</span>
+                  </div>
+                  {calculatedFare.discount > 0 && (
+                    <>
+                      <div className="flex justify-between text-green-600 dark:text-green-400">
+                        <span>Carpool Discount ({calculatedFare.discount}%):</span>
+                        <span>
+                          -{" "}
+                          {(
+                            calculatedFare.farePerPassenger -
+                            calculatedFare.discountedFare
+                          ).toFixed(2)}{" "}
+                          AED
+                        </span>
+                      </div>
+                      <div className="border-t border-blue-300 dark:border-blue-700 pt-2 flex justify-between font-bold text-foreground">
+                        <span>Final Price per Passenger:</span>
+                        <span className="text-green-600 dark:text-green-400">
+                          {calculatedFare.discountedFare} AED
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-lg flex gap-2">
               <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-blue-900 dark:text-blue-200">
-                Set competitive fares to attract more passengers and earn bonus rewards.
+                Fares are calculated by RTA guidelines based on vehicle type and distance.
+                Passengers receive a 10% carpool discount.
               </p>
             </div>
 
