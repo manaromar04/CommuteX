@@ -146,7 +146,7 @@ const responseMap: Record<string, ConversationStep> = {
   trip_cancel: "trip_details",
   rewards: "rewards_help",
   rewards_points: "rewards_details",
-  rewards_redeem: "rewards_details",
+  rewards_redeem: "rewards_redeem",
   rewards_tiers: "rewards_details",
   hubs: "hubs_help",
   hubs_what: "hubs_details",
