@@ -34,14 +34,14 @@ export function TabLayout({
   copilotContent,
 }: TabLayoutProps) {
   // Determine which tabs to show based on role
-  const visibleTabs: string[] = [];
+  const visibleTabs: string[] = ["hubs", "forecast", "copilot"];
 
   if (userRole === "PASSENGER") {
-    visibleTabs.push("passenger", "hubs", "forecast", "copilot");
+    visibleTabs.unshift("passenger");
   } else if (userRole === "DRIVER") {
-    visibleTabs.push("driver", "hubs", "forecast", "copilot");
+    visibleTabs.unshift("driver");
   } else if (userRole === "ADMIN") {
-    visibleTabs.push("passenger", "driver", "hubs", "forecast", "admin", "copilot");
+    visibleTabs.unshift("admin");
   }
 
   // Fallback to default tab if current one is hidden
