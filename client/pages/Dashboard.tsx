@@ -15,6 +15,7 @@ import { EarningsModal } from "@/components/DriverModals/EarningsModal";
 import { MyTripsModal } from "@/components/DriverModals/MyTripsModal";
 import { TripCompletionModal, type TripPassenger } from "@/components/DriverModals/TripCompletionModal";
 import { AvailableTrips } from "@/components/PassengerBooking/AvailableTrips";
+import { TripSearch } from "@/components/PassengerBooking/TripSearch";
 import { seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking, UserRole } from "@shared/types";
 import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings } from "lucide-react";
