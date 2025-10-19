@@ -13,8 +13,6 @@ export default function AccessDenied() {
         return "/passenger/home";
       case "DRIVER":
         return "/driver/home";
-      case "ADMIN":
-        return "/admin/dashboard";
       default:
         return "/";
     }
