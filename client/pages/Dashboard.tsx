@@ -1085,6 +1085,33 @@ export default function Dashboard() {
         }}
         onConfirm={handleParkingBooking}
       />
+
+      {/* Driver Modals */}
+      <PostTripModal
+        open={isPostTripModalOpen}
+        onOpenChange={setIsPostTripModalOpen}
+        onTripCreated={(trip) => {
+          setTrips([...trips, trip]);
+        }}
+      />
+
+      <BookingRequestsModal
+        open={isBookingRequestsModalOpen}
+        onOpenChange={setIsBookingRequestsModalOpen}
+      />
+
+      <EarningsModal
+        open={isEarningsModalOpen}
+        onOpenChange={setIsEarningsModalOpen}
+      />
+
+      <MyTripsModal
+        open={isMyTripsModalOpen}
+        onOpenChange={setIsMyTripsModalOpen}
+        onTripDeleted={(tripId) => {
+          setTrips(trips.filter((t) => t.id !== tripId));
+        }}
+      />
     </div>
   );
 }
