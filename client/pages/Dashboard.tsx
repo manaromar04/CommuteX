@@ -1375,6 +1375,14 @@ export default function Dashboard() {
         }
         onCompleteTrip={handleCompleteTrip}
       />
+
+      {/* Redeem Vouchers Modal */}
+      <RedeemVouchersModal
+        open={isRedeemVouchersModalOpen}
+        onOpenChange={setIsRedeemVouchersModalOpen}
+        userPoints={currentUser?.reward_points || 0}
+        onRedeem={handleRedeemVoucher}
+      />
     </div>
   );
 }
