@@ -60,6 +60,7 @@ export default function Dashboard() {
     }
     setTrips(seedTrips);
     setBookings(seedBookings);
+    setUsers(seedUsers);
   }, [authUser]);
 
   // Set default active tab based on role
