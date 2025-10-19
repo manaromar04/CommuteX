@@ -308,8 +308,19 @@ export default function Dashboard() {
                       />
                     </div>
                   </div>
-                  <Button size="sm" className="w-full">
-                    Book Parking
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      setSelectedHub({
+                        ...hub,
+                        current_vehicles: hub.capacity - hub.available,
+                      });
+                      setIsParkingModalOpen(true);
+                    }}
+                    disabled={hub.available === 0}
+                  >
+                    {hub.available > 0 ? "Book Parking" : "Full"}
                   </Button>
                 </CardContent>
               </Card>
@@ -320,6 +331,35 @@ export default function Dashboard() {
     </div>
   );
 
+  const handleParkingBooking = () => {
+    if (!selectedHub || !currentUser) return;
+
+    const parkingCost = 20; // 5 AED/hour * 4 hours default
+    const rewardPoints = 40; // Park & Ride bonus
+
+    // Update user wallet and points
+    const updatedUser = {
+      ...currentUser,
+      wallet_balance_aed: currentUser.wallet_balance_aed - parkingCost,
+      reward_points: currentUser.reward_points + rewardPoints,
+    };
+
+    setCurrentUser(updatedUser);
+    setIsParkingModalOpen(false);
+
+    // Show success notification
+    const notification = document.createElement("div");
+    notification.className =
+      "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-top-4";
+    notification.innerHTML = `
+      <p class="font-semibold">Parking Space Booked!</p>
+      <p class="text-sm">20 AED charged • +40 Reward Points earned</p>
+    `;
+    document.body.appendChild(notification);
+
+    setTimeout(() => notification.remove(), 3000);
+  };
+
   const forecastContent = (
     <div className="space-y-6">
       <Card>
@@ -327,7 +367,7 @@ export default function Dashboard() {
           <CardTitle>Forecast Map</CardTitle>
           <CardDescription>AI-powered trip demand forecast</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <div className="space-y-4">
             {[
               {
@@ -370,6 +410,25 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
+
+          {/* Forecast Insights */}
+          <div className="border-t border-border pt-6 space-y-3">
+            <h3 className="font-semibold text-foreground">Forecast Insights</h3>
+            <div className="space-y-2">
+              <div className="flex gap-3 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-blue-900 dark:text-blue-200">
+                  <strong>Peak Hours:</strong> High demand expected between 7-9 AM and 5-7 PM. Book early for better availability.
+                </p>
+              </div>
+              <div className="flex gap-3 p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-green-900 dark:text-green-200">
+                  <strong>Best Time:</strong> Mid-day (10 AM - 3 PM) offers the most flexible booking options.
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -377,14 +436,104 @@ export default function Dashboard() {
 
   const adminContent = (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Total Trips</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">{trips.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Active trips</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-500">{bookings.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Confirmed bookings</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-500">
+              {bookings.reduce((sum, b) => sum + b.total_fare_aed, 0)} AED
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Total collected</p>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Admin Dashboard</CardTitle>
-          <CardDescription>Policy control and system management</CardDescription>
+          <CardTitle>Policy Management</CardTitle>
+          <CardDescription>Configure rewards and trip settings</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+              <div>
+                <p className="font-medium text-foreground">Carpool Reward Points</p>
+                <p className="text-sm text-muted-foreground">For trips with 3+ passengers</p>
+              </div>
+              <Badge className="bg-yellow-500 text-white">80 pts</Badge>
+            </div>
+
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+              <div>
+                <p className="font-medium text-foreground">Park & Ride Reward Points</p>
+                <p className="text-sm text-muted-foreground">For parking hub bookings</p>
+              </div>
+              <Badge className="bg-yellow-500 text-white">40 pts</Badge>
+            </div>
+
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
+              <div>
+                <p className="font-medium text-foreground">Minimum Trip Fare</p>
+                <p className="text-sm text-muted-foreground">Lowest allowed fare per trip</p>
+              </div>
+              <Badge className="bg-blue-500 text-white">20 AED</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>Latest system transactions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-12 text-muted-foreground">
-            Admin features available only to administrators
+          <div className="space-y-3">
+            {bookings.slice(-5).map((booking) => {
+              const trip = trips.find((t) => t.id === booking.trip_id);
+              return (
+                <div
+                  key={booking.id}
+                  className="flex items-center justify-between p-3 border border-border rounded-lg"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-sm truncate">
+                      {trip?.origin} → {trip?.destination}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(booking.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-primary">
+                      +{booking.total_fare_aed} AED
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </CardContent>
       </Card>
@@ -484,6 +633,18 @@ export default function Dashboard() {
           }}
         />
       )}
+
+      {/* Parking Modal */}
+      <ParkingModal
+        hub={selectedHub}
+        user={currentUser}
+        isOpen={isParkingModalOpen}
+        onClose={() => {
+          setIsParkingModalOpen(false);
+          setSelectedHub(null);
+        }}
+        onConfirm={handleParkingBooking}
+      />
     </div>
   );
 }
