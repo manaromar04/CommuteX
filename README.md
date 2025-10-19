@@ -5,7 +5,7 @@
 A modern, full-stack ride-sharing and carpooling application designed to revolutionize transportation in the UAE. CommuteX connects drivers and passengers with intelligent trip matching, real-time tracking, and integrated loyalty rewards.
 
 
-![Architecture Sketch](https://github.com/your-username/your-repo-name/raw/main/assets/commuteX-arch)
+![Architecture Sketch]([https://github.com/your-username/your-repo-name/raw/main/assets/commuteX-arch](https://github.com/manaromar04/CommuteX/blob/main/commuteX-arch.jpg?raw=true))
 
 ##  Features
 
