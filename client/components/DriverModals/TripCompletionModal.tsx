@@ -206,9 +206,9 @@ export function TripCompletionModal({
                     <span>Your Share (65%):</span>
                     <span className="font-semibold">+{trip.driverEarnings.toFixed(2)} AED</span>
                   </div>
-                  <div className="flex justify-between text-blue-700 dark:text-blue-300 mt-1">
+                  <div className="flex justify-between text-foreground mt-1">
                     <span>RTA Commission (35%):</span>
-                    <span className="font-semibold">
+                    <span className="font-semibold text-orange-600 dark:text-orange-400">
                       {(trip.passengers.reduce((sum, p) => sum + p.totalFare, 0) - trip.driverEarnings).toFixed(2)} AED
                     </span>
                   </div>
