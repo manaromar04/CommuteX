@@ -400,14 +400,39 @@ export default function Dashboard() {
         </Card>
       )}
 
+      {/* Trip Search */}
+      <TripSearch
+        onSearch={handleSearchTrips}
+        onClear={handleClearSearch}
+        hasActiveFilters={!!searchOrigin || !!searchDestination}
+      />
+
+      {/* Available Trips */}
       <Card>
         <CardHeader>
-          <CardTitle>Available Trips</CardTitle>
-          <CardDescription>Book your next carpool journey</CardDescription>
+          <CardTitle>
+            Available Trips
+            {(searchOrigin || searchDestination) && (
+              <span className="text-sm font-normal text-muted-foreground ml-2">
+                ({filteredTrips.length} found)
+              </span>
+            )}
+          </CardTitle>
+          <CardDescription>
+            {searchOrigin || searchDestination ? (
+              <>
+                Showing results for {searchOrigin && `from ${searchOrigin}`}
+                {searchOrigin && searchDestination && " to "}
+                {searchDestination && `to ${searchDestination}`}
+              </>
+            ) : (
+              "Book your next carpool journey"
+            )}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <AvailableTrips
-            trips={trips.map((trip) => ({
+            trips={filteredTrips.map((trip) => ({
               id: trip.id,
               driver_name: "Driver",
               driver_rating: 4.8,
