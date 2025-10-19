@@ -71,13 +71,6 @@ export default function Dashboard() {
         updatedUser.wallet_balance_aed !== currentUser.wallet_balance_aed ||
         updatedUser.reward_points !== currentUser.reward_points
       )) {
-        console.log("[Wallet Sync] Syncing currentUser:", {
-          currentId: currentUser.id,
-          prevWallet: currentUser.wallet_balance_aed,
-          newWallet: updatedUser.wallet_balance_aed,
-          prevPoints: currentUser.reward_points,
-          newPoints: updatedUser.reward_points,
-        });
         setCurrentUser({
           ...currentUser,
           wallet_balance_aed: updatedUser.wallet_balance_aed,
