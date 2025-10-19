@@ -148,8 +148,17 @@ export default function Dashboard() {
         current_passengers: selectedTrip.current_passengers + seatsCount,
       };
 
-      // Credit driver's wallet
+      // Update both passenger and driver wallets in users array
       const updatedUsers = users.map((u) => {
+        // Update passenger wallet
+        if (u.id === currentUser.id) {
+          return {
+            ...u,
+            wallet_balance_aed: u.wallet_balance_aed - fare,
+            reward_points: u.reward_points + rewardPoints,
+          };
+        }
+        // Credit driver's wallet
         if (u.id === selectedTrip.driver_id) {
           return {
             ...u,
@@ -159,16 +168,8 @@ export default function Dashboard() {
         return u;
       });
 
-      // If current user is the driver, update their balance too
-      if (currentUser.id === selectedTrip.driver_id) {
-        const updatedDriver = {
-          ...currentUser,
-          wallet_balance_aed: currentUser.wallet_balance_aed + driverCommission,
-        };
-        setCurrentUser(updatedDriver);
-      } else {
-        setCurrentUser(updatedUser);
-      }
+      // Update currentUser directly for immediate UI feedback
+      setCurrentUser(updatedUser);
       setUsers(updatedUsers);
       setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
       setBookings([...bookings, newBooking]);
