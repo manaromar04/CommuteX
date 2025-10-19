@@ -203,23 +203,10 @@ export default function Dashboard() {
         created_at: new Date(),
       };
 
-      // Update both passenger and driver wallets in users array
+      // Passenger already paid when booking, just confirm driver's commission
       const updatedUsers = users.map((u) => {
-        // Deduct from passenger's wallet
-        if (u.id === bookingReq.passengerId) {
-          return {
-            ...u,
-            wallet_balance_aed: u.wallet_balance_aed - totalFare,
-            reward_points: u.reward_points + (seats >= 3 ? 80 : 0),
-          };
-        }
-        // Credit driver's wallet
-        if (u.id === trip.driver_id) {
-          return {
-            ...u,
-            wallet_balance_aed: u.wallet_balance_aed + driverCommission,
-          };
-        }
+        // Driver wallet already credited, no changes needed on confirm
+        // (passenger paid when they made the booking request)
         return u;
       });
 
