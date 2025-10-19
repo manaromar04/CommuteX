@@ -79,49 +79,6 @@ export default function Dashboard() {
     setIsBookingModalOpen(true);
   };
 
-  const handleConfirmBooking = (seats: number) => {
-    if (!selectedTrip || !currentUser) return;
-
-    const totalFare = selectedTrip.fare_aed * seats;
-    const rewardPoints = selectedTrip.current_passengers + seats >= 3 ? 80 : 40;
-
-    // Create new booking
-    const newBooking: Booking = {
-      id: `booking_${Date.now()}`,
-      trip_id: selectedTrip.id,
-      passenger_id: currentUser.id,
-      seats_booked: seats,
-      total_fare_aed: totalFare,
-      status: "CONFIRMED",
-      reward_points_earned: rewardPoints,
-      created_at: new Date(),
-    };
-
-    // Update user wallet and points
-    const updatedUser = {
-      ...currentUser,
-      wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
-      reward_points: currentUser.reward_points + rewardPoints,
-    };
-
-    // Update trip available seats
-    const updatedTrip = {
-      ...selectedTrip,
-      available_seats: selectedTrip.available_seats - seats,
-      current_passengers: selectedTrip.current_passengers + seats,
-    };
-
-    // Update state
-    setCurrentUser(updatedUser);
-    setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
-    setBookings([...bookings, newBooking]);
-    setLastBooking(newBooking);
-
-    // Show success modal
-    setIsBookingModalOpen(false);
-    setShowBookingSuccess(true);
-  };
-
   const getTierColor = (tier: string) => {
     const colors: Record<string, string> = {
       BRONZE: "bg-amber-600",
