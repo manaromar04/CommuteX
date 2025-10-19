@@ -89,6 +89,98 @@ export default function Dashboard() {
     return colors[tier] || "bg-slate-500";
   };
 
+  // Handle confirm booking from BookingModal or booking requests
+  const handleConfirmBooking = (
+    bookingIdOrSeats: string | number,
+    tripId?: string,
+    seats?: number,
+    totalFare?: number
+  ) => {
+    if (!currentUser) return;
+
+    // Case 1: Called from BookingModal with just seats number
+    if (typeof bookingIdOrSeats === "number" && selectedTrip) {
+      const seatsCount = bookingIdOrSeats;
+      const fare = selectedTrip.fare_aed * seatsCount;
+      const rewardPoints = selectedTrip.current_passengers + seatsCount >= 3 ? 80 : 40;
+
+      const newBooking: Booking = {
+        id: `booking_${Date.now()}`,
+        trip_id: selectedTrip.id,
+        passenger_id: currentUser.id,
+        seats_booked: seatsCount,
+        total_fare_aed: fare,
+        status: "CONFIRMED",
+        reward_points_earned: rewardPoints,
+        created_at: new Date(),
+      };
+
+      const updatedUser = {
+        ...currentUser,
+        wallet_balance_aed: currentUser.wallet_balance_aed - fare,
+        reward_points: currentUser.reward_points + rewardPoints,
+      };
+
+      const updatedTrip = {
+        ...selectedTrip,
+        available_seats: selectedTrip.available_seats - seatsCount,
+        current_passengers: selectedTrip.current_passengers + seatsCount,
+      };
+
+      setCurrentUser(updatedUser);
+      setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
+      setBookings([...bookings, newBooking]);
+      setLastBooking(newBooking);
+      setIsBookingModalOpen(false);
+      setShowBookingSuccess(true);
+      return;
+    }
+
+    // Case 2: Called from booking requests with full parameters
+    if (typeof bookingIdOrSeats === "string" && tripId && seats && totalFare) {
+      const bookingId = bookingIdOrSeats;
+
+      const updatedUser = {
+        ...currentUser,
+        wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
+        reward_points: currentUser.reward_points + (seats >= 3 ? 80 : 0),
+      };
+
+      const newBooking: Booking = {
+        id: bookingId,
+        trip_id: tripId,
+        passenger_id: currentUser.id,
+        seats_booked: seats,
+        total_fare_aed: totalFare,
+        status: "CONFIRMED",
+        reward_points_earned: seats >= 3 ? 80 : 0,
+        created_at: new Date(),
+      };
+
+      const trip = trips.find((t) => t.id === tripId);
+      if (trip) {
+        const updatedTrip = {
+          ...trip,
+          available_seats: trip.available_seats - seats,
+        };
+        setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
+      }
+
+      setCurrentUser(updatedUser);
+      setBookings([...bookings, newBooking]);
+      setBookingRequests(
+        bookingRequests.map((br) =>
+          br.id === bookingId ? { ...br, status: "confirmed" as const } : br
+        )
+      );
+
+      toast({
+        title: "Booking Confirmed",
+        description: `Successfully booked ${seats} seat${seats > 1 ? "s" : ""}`,
+      });
+    }
+  };
+
   // Handle passenger booking from AvailableTrips component
   const handlePassengerBookTrip = (tripId: string, seats: number) => {
     const trip = trips.find((t) => t.id === tripId);
@@ -126,59 +218,6 @@ export default function Dashboard() {
     setTimeout(() => {
       handleConfirmBooking(bookingRequest.id, tripId, seats, totalFare);
     }, 500);
-  };
-
-  // Handle confirm booking request
-  const handleConfirmBooking = (
-    bookingId: string,
-    tripId: string,
-    seats: number,
-    totalFare: number
-  ) => {
-    if (!currentUser) return;
-
-    // Update user wallet
-    const updatedUser = {
-      ...currentUser,
-      wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
-      reward_points: currentUser.reward_points + (seats >= 3 ? 80 : 0),
-    };
-
-    // Create booking
-    const newBooking: Booking = {
-      id: bookingId,
-      trip_id: tripId,
-      passenger_id: currentUser.id,
-      seats_booked: seats,
-      total_fare_aed: totalFare,
-      status: "CONFIRMED",
-      reward_points_earned: seats >= 3 ? 80 : 0,
-      created_at: new Date(),
-    };
-
-    // Update trip
-    const trip = trips.find((t) => t.id === tripId);
-    if (trip) {
-      const updatedTrip = {
-        ...trip,
-        available_seats: trip.available_seats - seats,
-      };
-      setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
-    }
-
-    // Update state
-    setCurrentUser(updatedUser);
-    setBookings([...bookings, newBooking]);
-    setBookingRequests(
-      bookingRequests.map((br) =>
-        br.id === bookingId ? { ...br, status: "confirmed" as const } : br
-      )
-    );
-
-    toast({
-      title: "Booking Confirmed",
-      description: `Successfully booked ${seats} seat${seats > 1 ? "s" : ""}`,
-    });
   };
 
   // Handle decline booking request
