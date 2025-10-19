@@ -203,6 +203,16 @@ export default function Dashboard() {
           }
           return u;
         });
+
+        // If current user is the driver, update their balance too
+        if (currentUser.id === trip.driver_id) {
+          const updatedDriver = {
+            ...currentUser,
+            wallet_balance_aed: currentUser.wallet_balance_aed + driverCommission,
+          };
+          setCurrentUser(updatedDriver);
+        }
+
         setUsers(updatedUsers);
       }
 
