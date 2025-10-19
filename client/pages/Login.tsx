@@ -49,8 +49,6 @@ export default function Login() {
         navigate("/passenger/home");
       } else if (role === "DRIVER") {
         navigate("/driver/home");
-      } else if (role === "ADMIN") {
-        navigate("/admin/dashboard");
       }
     }, 500);
   };
