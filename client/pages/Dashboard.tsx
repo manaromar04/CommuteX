@@ -456,6 +456,31 @@ export default function Dashboard() {
           copilotContent={copilotContent}
         />
       </main>
+
+      {/* Booking Modal */}
+      <BookingModal
+        trip={selectedTrip}
+        user={currentUser}
+        isOpen={isBookingModalOpen}
+        onClose={() => {
+          setIsBookingModalOpen(false);
+          setSelectedTrip(null);
+        }}
+        onConfirm={handleConfirmBooking}
+      />
+
+      {/* Booking Success Modal */}
+      {showBookingSuccess && lastBooking && selectedTrip && (
+        <BookingSuccess
+          booking={lastBooking}
+          trip={selectedTrip}
+          onClose={() => {
+            setShowBookingSuccess(false);
+            setLastBooking(null);
+            setSelectedTrip(null);
+          }}
+        />
+      )}
     </div>
   );
 }
