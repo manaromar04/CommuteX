@@ -29,7 +29,6 @@ export function TabLayout({
   driverContent,
   hubsContent,
   forecastContent,
-  adminContent,
   copilotContent,
 }: TabLayoutProps) {
   // Determine which tabs to show based on role
