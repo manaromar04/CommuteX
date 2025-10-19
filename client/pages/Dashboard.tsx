@@ -453,7 +453,9 @@ export default function Dashboard() {
             <CardTitle className="text-sm font-medium">Active Trips</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-500">0</div>
+            <div className="text-2xl font-bold text-blue-500">
+              {trips.filter((t) => t.status !== "completed").length}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Ongoing</p>
           </CardContent>
         </Card>
@@ -488,8 +490,12 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full" onClick={() => setIsBookingRequestsModalOpen(true)}>
-              View Requests (0)
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setIsBookingRequestsModalOpen(true)}
+            >
+              View Requests ({bookingRequests.filter((b) => b.status === "pending").length})
             </Button>
           </CardContent>
         </Card>
