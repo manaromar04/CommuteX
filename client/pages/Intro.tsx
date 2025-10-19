@@ -24,7 +24,7 @@ export default function Intro() {
         <div className="max-w-2xl text-center space-y-8">
           <div className="space-y-3">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-              Smart Commuting for the UAE
+              Smart Commuting for UAE
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground">
               Save money, earn rewards, and join a sustainable commuting community
