@@ -1120,7 +1120,6 @@ export default function Dashboard() {
           driverContent={driverContent}
           hubsContent={hubsContent}
           forecastContent={forecastContent}
-          adminContent={adminContent}
           copilotContent={copilotContent}
         />
       </main>
