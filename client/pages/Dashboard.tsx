@@ -277,6 +277,12 @@ export default function Dashboard() {
     };
 
     setBookingRequests((prev) => [...prev, bookingRequest]);
+
+    // Show booking request created notification
+    toast({
+      title: "Booking Request Sent",
+      description: `Request for ${seats} seat${seats > 1 ? "s" : ""} (${totalFare} AED) sent to driver. Awaiting confirmation.`,
+    });
   };
 
   // Handle decline booking request
