@@ -10,13 +10,18 @@ import { BookingModal } from "@/components/BookingModal";
 import { BookingSuccess } from "@/components/BookingSuccess";
 import { ParkingModal } from "@/components/ParkingModal";
 import { PostTripModal } from "@/components/DriverModals/PostTripModal";
-import { BookingRequestsModal } from "@/components/DriverModals/BookingRequestsModal";
+import { BookingRequestsModal, type BookingRequest } from "@/components/DriverModals/BookingRequestsModal";
 import { EarningsModal } from "@/components/DriverModals/EarningsModal";
 import { MyTripsModal } from "@/components/DriverModals/MyTripsModal";
+import { TripCompletionModal, type TripPassenger } from "@/components/DriverModals/TripCompletionModal";
+import { AvailableTrips } from "@/components/PassengerBooking/AvailableTrips";
 import { seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking, UserRole } from "@shared/types";
 import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { calculateCarpoolRewards } from "@/lib/rewards";
+import { settleTripPayments, getTripSettlementSummary } from "@/lib/tripCompletion";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const navigate = useNavigate();
