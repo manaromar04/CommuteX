@@ -42,6 +42,10 @@ export default function Dashboard() {
   const [isBookingRequestsModalOpen, setIsBookingRequestsModalOpen] = useState(false);
   const [isEarningsModalOpen, setIsEarningsModalOpen] = useState(false);
   const [isMyTripsModalOpen, setIsMyTripsModalOpen] = useState(false);
+  const [isTripCompletionModalOpen, setIsTripCompletionModalOpen] = useState(false);
+  const [selectedTripForCompletion, setSelectedTripForCompletion] = useState<Trip | null>(null);
+  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Initialize with authenticated user
