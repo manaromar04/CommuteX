@@ -9,6 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { BookingModal } from "@/components/BookingModal";
 import { BookingSuccess } from "@/components/BookingSuccess";
 import { ParkingModal } from "@/components/ParkingModal";
+import { PostTripModal } from "@/components/DriverModals/PostTripModal";
+import { BookingRequestsModal } from "@/components/DriverModals/BookingRequestsModal";
+import { EarningsModal } from "@/components/DriverModals/EarningsModal";
+import { MyTripsModal } from "@/components/DriverModals/MyTripsModal";
 import { seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking, UserRole } from "@shared/types";
 import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings } from "lucide-react";
@@ -29,6 +33,10 @@ export default function Dashboard() {
   const [isParkingModalOpen, setIsParkingModalOpen] = useState(false);
   const [forecastHour, setForecastHour] = useState(7);
   const [selectedCorridor, setSelectedCorridor] = useState<string | null>(null);
+  const [isPostTripModalOpen, setIsPostTripModalOpen] = useState(false);
+  const [isBookingRequestsModalOpen, setIsBookingRequestsModalOpen] = useState(false);
+  const [isEarningsModalOpen, setIsEarningsModalOpen] = useState(false);
+  const [isMyTripsModalOpen, setIsMyTripsModalOpen] = useState(false);
 
   useEffect(() => {
     // Initialize with authenticated user
