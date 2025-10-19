@@ -26,17 +26,6 @@ export const seedUsers: User[] = [
   },
   {
     id: "user_3",
-    name: "Rami",
-    role: "DRIVER",
-    email: "rami@email.com",
-    phone: "+971503456789",
-    wallet_balance_aed: 1500,
-    tier: "PLATINUM",
-    reward_points: 450,
-    created_at: new Date("2023-12-01"),
-  },
-  {
-    id: "user_4",
     name: "Manar",
     role: "DRIVER",
     email: "manar@email.com",
@@ -64,7 +53,7 @@ export const seedTrips: Trip[] = [
   },
   {
     id: "trip_2",
-    driver_id: "user_4",
+    driver_id: "user_3",
     origin: "Sharjah University",
     destination: "Dubai Downtown",
     departure_time: new Date("2024-01-20T08:30:00"),
@@ -125,14 +114,6 @@ export const seedRewards: Reward[] = [
   {
     id: "reward_2",
     user_id: "user_3",
-    type: "CARPOOL",
-    points: 80,
-    description: "Carpool trip with 3+ passengers",
-    created_at: new Date("2024-01-12"),
-  },
-  {
-    id: "reward_3",
-    user_id: "user_4",
     type: "CARPOOL",
     points: 80,
     description: "Carpool trip with 3+ passengers",
