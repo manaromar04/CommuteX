@@ -130,6 +130,164 @@ export default function Dashboard() {
     return colors[tier] || "bg-slate-500";
   };
 
+  // Handle passenger booking from AvailableTrips component
+  const handlePassengerBookTrip = (tripId: string, seats: number) => {
+    const trip = trips.find((t) => t.id === tripId);
+    if (!trip || !currentUser) return;
+
+    // Check wallet balance
+    const totalFare = (trip.fare_aed || 0) * seats;
+    if (currentUser.wallet_balance_aed < totalFare) {
+      toast({
+        title: "Insufficient Balance",
+        description: `You need ${totalFare} AED but only have ${currentUser.wallet_balance_aed} AED`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create booking request
+    const bookingRequest: BookingRequest = {
+      id: `req_${Date.now()}`,
+      passengerName: currentUser.name,
+      passengerId: currentUser.id,
+      tripId: trip.id,
+      tripOrigin: trip.origin,
+      tripDestination: trip.destination,
+      seats,
+      farePerPassenger: trip.fare_aed || 0,
+      totalCost: totalFare,
+      status: "pending",
+      requestedAt: new Date().toLocaleString(),
+    };
+
+    setBookingRequests([...bookingRequests, bookingRequest]);
+
+    // Auto-confirm for demo (in real app, driver would confirm)
+    setTimeout(() => {
+      handleConfirmBooking(bookingRequest.id, tripId, seats, totalFare);
+    }, 500);
+  };
+
+  // Handle confirm booking request
+  const handleConfirmBooking = (
+    bookingId: string,
+    tripId: string,
+    seats: number,
+    totalFare: number
+  ) => {
+    if (!currentUser) return;
+
+    // Update user wallet
+    const updatedUser = {
+      ...currentUser,
+      wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
+      reward_points: currentUser.reward_points + (seats >= 3 ? 80 : 0),
+    };
+
+    // Create booking
+    const newBooking: Booking = {
+      id: bookingId,
+      trip_id: tripId,
+      passenger_id: currentUser.id,
+      seats_booked: seats,
+      total_fare_aed: totalFare,
+      status: "CONFIRMED",
+      reward_points_earned: seats >= 3 ? 80 : 0,
+      created_at: new Date(),
+    };
+
+    // Update trip
+    const trip = trips.find((t) => t.id === tripId);
+    if (trip) {
+      const updatedTrip = {
+        ...trip,
+        available_seats: trip.available_seats - seats,
+      };
+      setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
+    }
+
+    // Update state
+    setCurrentUser(updatedUser);
+    setBookings([...bookings, newBooking]);
+    setBookingRequests(
+      bookingRequests.map((br) =>
+        br.id === bookingId ? { ...br, status: "confirmed" as const } : br
+      )
+    );
+
+    toast({
+      title: "Booking Confirmed",
+      description: `Successfully booked ${seats} seat${seats > 1 ? "s" : ""}`,
+    });
+  };
+
+  // Handle decline booking request
+  const handleDeclineBooking = (bookingId: string) => {
+    setBookingRequests(
+      bookingRequests.map((br) =>
+        br.id === bookingId ? { ...br, status: "rejected" as const } : br
+      )
+    );
+
+    toast({
+      title: "Booking Declined",
+      description: "The booking request has been declined",
+    });
+  };
+
+  // Handle trip completion
+  const handleCompleteTrip = (tripId: string) => {
+    const trip = trips.find((t) => t.id === tripId);
+    if (!trip || !currentUser) return;
+
+    // Get passengers on this trip
+    const tripBookings = bookings.filter((b) => b.trip_id === tripId);
+
+    // Calculate settlements
+    const updates = settleTripPayments({
+      tripId,
+      driverId: currentUser.id,
+      passengers: tripBookings.map((b) => ({
+        passengerId: b.passenger_id,
+        seatsBooked: b.seats_booked,
+        farePerPassenger: b.total_fare_aed / b.seats_booked,
+        totalFare: b.total_fare_aed,
+      })),
+      carType: "SEDAN",
+      distanceKm: 40,
+      completedAt: new Date().toISOString(),
+    });
+
+    // Apply wallet updates
+    let updatedUser = { ...currentUser };
+    updates.forEach((update) => {
+      if (update.userId === currentUser.id && update.type === "credit") {
+        updatedUser.wallet_balance_aed += update.amountChange;
+      }
+    });
+
+    // Apply carpool reward
+    const carpoolReward = calculateCarpoolRewards(tripBookings.length);
+    if (carpoolReward) {
+      updatedUser.reward_points += carpoolReward.points;
+    }
+
+    // Update trip status
+    const updatedTrip = {
+      ...trip,
+      status: "completed" as const,
+    };
+
+    setCurrentUser(updatedUser);
+    setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
+
+    toast({
+      title: "Trip Completed",
+      description: `Earned ${updatedUser.wallet_balance_aed - currentUser.wallet_balance_aed} AED from ${tripBookings.length} passengers`,
+    });
+  };
+
   const passengerContent = (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
