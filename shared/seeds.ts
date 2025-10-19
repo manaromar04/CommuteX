@@ -109,3 +109,33 @@ export const seedRewards: Reward[] = [
     created_at: new Date("2024-01-14"),
   },
 ];
+
+// Seed Booking Requests for demo
+export const seedBookingRequests = [
+  {
+    id: "req_1704067200000",
+    passengerName: "Huda",
+    passengerId: "user_2",
+    tripId: "trip_1",
+    tripOrigin: "Sharjah Central Bus Station",
+    tripDestination: "Dubai Mall",
+    seats: 2,
+    farePerPassenger: 25,
+    totalCost: 50,
+    status: "pending" as const,
+    requestedAt: new Date().toLocaleString(),
+  },
+  {
+    id: "req_1704067500000",
+    passengerName: "Huda",
+    passengerId: "user_2",
+    tripId: "trip_2",
+    tripOrigin: "Sharjah University",
+    tripDestination: "Dubai Downtown",
+    seats: 1,
+    farePerPassenger: 20,
+    totalCost: 20,
+    status: "pending" as const,
+    requestedAt: new Date().toLocaleString(),
+  },
+];
