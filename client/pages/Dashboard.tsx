@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookingModal } from "@/components/BookingModal";
 import { BookingSuccess } from "@/components/BookingSuccess";
+import { ParkingModal } from "@/components/ParkingModal";
 import { seedUsers, seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking } from "@shared/types";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("passenger");
@@ -20,6 +21,8 @@ export default function Dashboard() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [lastBooking, setLastBooking] = useState<Booking | null>(null);
   const [showBookingSuccess, setShowBookingSuccess] = useState(false);
+  const [selectedHub, setSelectedHub] = useState<any>(null);
+  const [isParkingModalOpen, setIsParkingModalOpen] = useState(false);
 
   useEffect(() => {
     // Initialize with seed data
