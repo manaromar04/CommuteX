@@ -43,7 +43,16 @@ export default function Login() {
     // Simulate loading
     setTimeout(() => {
       login(user);
-      navigate("/dashboard");
+
+      // Redirect to role-specific home
+      const role = user.role || "PASSENGER";
+      if (role === "PASSENGER") {
+        navigate("/passenger/home");
+      } else if (role === "DRIVER") {
+        navigate("/driver/home");
+      } else if (role === "ADMIN") {
+        navigate("/admin/dashboard");
+      }
     }, 500);
   };
 
