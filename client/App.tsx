@@ -9,7 +9,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import PassengerHome from "./pages/PassengerHome";
 import DriverHome from "./pages/DriverHome";
-import AdminDashboard from "./pages/AdminDashboard";
 import Intro from "./pages/Intro";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
