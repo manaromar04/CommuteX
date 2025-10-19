@@ -1,13 +1,14 @@
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
-import { Zap } from "lucide-react";
+import { Zap, LogOut } from "lucide-react";
 
 interface TopNavProps {
   userName?: string;
   walletBalance?: number;
+  onLogout?: () => void;
 }
 
-export function TopNav({ userName = "Guest", walletBalance = 0 }: TopNavProps) {
+export function TopNav({ userName = "Guest", walletBalance = 0, onLogout }: TopNavProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
       <div className="container flex h-16 items-center justify-between">
@@ -29,6 +30,17 @@ export function TopNav({ userName = "Guest", walletBalance = 0 }: TopNavProps) {
           </div>
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-red-600" />
           <ThemeToggle />
+          {onLogout && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={onLogout}
+              title="Logout"
+              className="rounded-full"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </header>

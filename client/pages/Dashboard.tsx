@@ -603,6 +603,7 @@ export default function Dashboard() {
       <TopNav
         userName={currentUser?.name}
         walletBalance={currentUser?.wallet_balance_aed}
+        onLogout={handleLogout}
       />
 
       <main className="container py-8">
