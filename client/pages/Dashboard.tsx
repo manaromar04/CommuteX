@@ -63,14 +63,18 @@ export default function Dashboard() {
     setUsers(seedUsers);
   }, [authUser]);
 
-  // Sync currentUser wallet when users array updates
+  // Sync currentUser wallet and reward points when users array updates
   useEffect(() => {
     if (currentUser && users.length > 0) {
       const updatedUser = users.find((u) => u.id === currentUser.id);
-      if (updatedUser && updatedUser.wallet_balance_aed !== currentUser.wallet_balance_aed) {
+      if (updatedUser && (
+        updatedUser.wallet_balance_aed !== currentUser.wallet_balance_aed ||
+        updatedUser.reward_points !== currentUser.reward_points
+      )) {
         setCurrentUser({
           ...currentUser,
           wallet_balance_aed: updatedUser.wallet_balance_aed,
+          reward_points: updatedUser.reward_points,
         });
       }
     }
