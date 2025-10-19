@@ -48,6 +48,8 @@ export default function Dashboard() {
   const [selectedTripForCompletion, setSelectedTripForCompletion] = useState<Trip | null>(null);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
   const [selectedHubConfig, setSelectedHubConfig] = useState<typeof HUBS[0] | null>(null);
+  const [searchOrigin, setSearchOrigin] = useState("");
+  const [searchDestination, setSearchDestination] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
