@@ -1,4 +1,6 @@
-# CommuteX - Smart Commuting Platform for UAE
+# CommuteX - Smart Commuting Platform for UAE 
+# Innovation Hackathon - Zaid University [TeamId: IH25077]
+# Developed by Manar Omar, Salma Rushdi, and Rana Alsttari (Ajman University)
 
 A modern, full-stack ride-sharing and carpooling application designed to revolutionize transportation in the UAE. CommuteX connects drivers and passengers with intelligent trip matching, real-time tracking, and integrated loyalty rewards.
 
@@ -71,7 +73,6 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 │   │   ├── Dashboard.tsx           # Main driver/passenger dashboard
 │   │   ├── DriverHome.tsx          # Driver home
 │   │   ├── Login.tsx               # Authentication
-│   │   ├── AdminDashboard.tsx      # Admin panel
 │   │   └── ...
 │   ├── components/                 # React components
 │   │   ├── DriverModals/           # Driver-specific modals
@@ -110,47 +111,6 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
     └── functions/                  # Serverless functions
 ```
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- pnpm (npm install -g pnpm)
-
-### Installation
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/yourusername/commutex.git
-   cd commutex
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Start development server**
-   ```bash
-   pnpm dev
-   ```
-   The app will be available at `http://localhost:8080`
-
-### Build for Production
-
-```bash
-pnpm build
-```
-
-This creates optimized builds for both client and server in the `dist/` directory.
-
-### Run Production Server
-
-```bash
-pnpm start
-```
 
 ## 📱 Key Workflows
 
@@ -214,7 +174,6 @@ The app uses role-based access control:
 
 - **PASSENGER**: Can book trips, redeem vouchers, earn points
 - **DRIVER**: Can create trips, accept bookings, earn commission
-- **ADMIN**: Full system access, analytics, user management
 
 ### Demo Credentials
 
@@ -366,9 +325,6 @@ We welcome contributions! Please follow these steps:
 - Use Prettier for formatting
 - Add tests for new features
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👥 Support
 
@@ -388,11 +344,7 @@ For issues and questions:
 - [ ] Multi-language support
 - [ ] Mobile app (React Native)
 
-## 📞 Contact
 
-- **Email**: support@commutex.com
-- **Website**: www.commutex.ae
-- **GitHub**: [@yourusername](https://github.com/yourusername)
 
 ---
 
