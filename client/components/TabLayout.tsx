@@ -38,8 +38,6 @@ export function TabLayout({
     visibleTabs.unshift("passenger");
   } else if (userRole === "DRIVER") {
     visibleTabs.unshift("driver");
-  } else if (userRole === "ADMIN") {
-    visibleTabs.unshift("admin");
   }
 
   // Fallback to default tab if current one is hidden
