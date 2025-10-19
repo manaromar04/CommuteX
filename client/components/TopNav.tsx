@@ -30,7 +30,6 @@ export function TopNav({
     const colors: Record<string, string> = {
       PASSENGER: "bg-blue-600",
       DRIVER: "bg-green-600",
-      ADMIN: "bg-purple-600",
     };
     return colors[role || "PASSENGER"] || "bg-slate-600";
   };
@@ -39,7 +38,6 @@ export function TopNav({
     const labels: Record<string, string> = {
       PASSENGER: "Passenger",
       DRIVER: "Driver",
-      ADMIN: "Admin",
     };
     return labels[role || "PASSENGER"] || "Guest";
   };
