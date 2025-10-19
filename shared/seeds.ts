@@ -1,4 +1,4 @@
-import { User, Trip, Booking, Reward } from "./types";
+import { User, Trip, Booking, Reward, Voucher } from "./types";
 
 // Seed Users
 export const seedUsers: User[] = [
