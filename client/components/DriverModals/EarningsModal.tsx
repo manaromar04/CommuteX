@@ -19,32 +19,40 @@ export function EarningsModal({ open, onOpenChange }: EarningsModalProps) {
       id: 1,
       date: "2024-01-15",
       tripRoute: "Sharjah → Dubai",
+      carType: "Sedan",
       passengers: 3,
-      amount: 150,
+      farePerPassenger: 15.75,
+      amount: 47.25,
       bonusPoints: 80,
     },
     {
       id: 2,
       date: "2024-01-14",
       tripRoute: "Ajman → Dubai",
+      carType: "Sedan",
       passengers: 2,
-      amount: 100,
+      farePerPassenger: 13.5,
+      amount: 27,
       bonusPoints: 0,
     },
     {
       id: 3,
       date: "2024-01-13",
       tripRoute: "Sharjah → Dubai",
+      carType: "Sedan",
       passengers: 4,
-      amount: 200,
+      farePerPassenger: 15.75,
+      amount: 63,
       bonusPoints: 80,
     },
     {
       id: 4,
       date: "2024-01-12",
       tripRoute: "Sharjah → Abu Dhabi",
+      carType: "SUV",
       passengers: 3,
-      amount: 180,
+      farePerPassenger: 19.35,
+      amount: 58.05,
       bonusPoints: 80,
     },
   ];
@@ -131,16 +139,17 @@ export function EarningsModal({ open, onOpenChange }: EarningsModalProps) {
                     </p>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                       <span>{earning.date}</span>
+                      <span>{earning.carType}</span>
                       <span className="flex items-center gap-1">
                         <Users className="h-3 w-3" />
-                        {earning.passengers} passengers
+                        {earning.passengers} × {earning.farePerPassenger} AED
                       </span>
                     </div>
                   </div>
 
                   <div className="text-right">
                     <p className="font-semibold text-green-600">
-                      +{earning.amount} AED
+                      +{earning.amount.toFixed(2)} AED
                     </p>
                     {earning.bonusPoints > 0 && (
                       <p className="text-xs text-yellow-600 mt-1">
