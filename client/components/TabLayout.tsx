@@ -18,7 +18,6 @@ interface TabLayoutProps {
   driverContent?: ReactNode;
   hubsContent?: ReactNode;
   forecastContent?: ReactNode;
-  adminContent?: ReactNode;
   copilotContent?: ReactNode;
 }
 
