@@ -29,12 +29,6 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Smart Hubs**: Book parking at premium facilities
 - **Voucher Redemption**: Redeem rewards for fuel and parking discounts
 
-### Admin Features
-
-- **Dashboard**: Monitor all trips, users, and transactions
-- **User Management**: Manage drivers, passengers, and their data
-- **Analytics**: View system metrics and performance
-- **Commission Tracking**: Monitor 65/35 commission split
 
 ## 🛠️ Tech Stack
 
