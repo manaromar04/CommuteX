@@ -327,7 +327,9 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button className="w-full">Create New Trip</Button>
+            <Button className="w-full" onClick={() => setIsPostTripModalOpen(true)}>
+              Create New Trip
+            </Button>
           </CardContent>
         </Card>
 
@@ -342,7 +344,7 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => setIsBookingRequestsModalOpen(true)}>
               View Requests (0)
             </Button>
           </CardContent>
@@ -359,7 +361,7 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => setIsEarningsModalOpen(true)}>
               View Earnings
             </Button>
           </CardContent>
@@ -376,7 +378,7 @@ export default function Dashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={() => setIsMyTripsModalOpen(true)}>
               View All Trips
             </Button>
           </CardContent>
