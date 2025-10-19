@@ -133,12 +133,6 @@ export function TabLayout({
           </TabsContent>
         )}
 
-        {visibleTabs.includes("admin") && (
-          <TabsContent value="admin" className="mt-4">
-            {adminContent || <div>Admin Dashboard content</div>}
-          </TabsContent>
-        )}
-
         {visibleTabs.includes("copilot") && (
           <TabsContent value="copilot" className="mt-4">
             {copilotContent || <div>AI Copilot content</div>}
