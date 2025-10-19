@@ -56,7 +56,6 @@ export function UserProfile({
     const colors: Record<string, string> = {
       PASSENGER: "bg-blue-600",
       DRIVER: "bg-green-600",
-      ADMIN: "bg-purple-600",
     };
     return colors[role] || "bg-slate-600";
   };
