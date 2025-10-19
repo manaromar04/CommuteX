@@ -10,7 +10,11 @@ interface Message {
   timestamp: Date;
 }
 
-export function SalmaCopilot() {
+interface SalmaCopilotProps {
+  isFloating?: boolean;
+}
+
+export function SalmaCopilot({ isFloating = false }: SalmaCopilotProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -55,19 +59,33 @@ export function SalmaCopilot() {
     }, 500);
   };
 
+  const cardClasses = isFloating
+    ? "h-full flex flex-col bg-card border-0"
+    : "h-full flex flex-col";
+
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5 text-primary" />
-          <div>
-            <CardTitle>Salma AI Copilot</CardTitle>
-            <CardDescription>Your smart commuting assistant</CardDescription>
+    <Card className={cardClasses}>
+      {!isFloating && (
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5 text-primary" />
+            <div>
+              <CardTitle>Salma AI Copilot</CardTitle>
+              <CardDescription>Your smart commuting assistant</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+      )}
+      {isFloating && (
+        <div className="px-4 py-3 border-b border-border bg-card">
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4 text-primary" />
+            <h2 className="font-semibold text-foreground text-sm">Salma</h2>
           </div>
         </div>
-      </CardHeader>
+      )}
       <CardContent className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+        <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-2">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -91,7 +109,7 @@ export function SalmaCopilot() {
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="Ask Salma anything..."
+            placeholder="Ask Salma..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => {
@@ -105,7 +123,7 @@ export function SalmaCopilot() {
             size="icon"
             onClick={handleSendMessage}
             disabled={!input.trim()}
-            className="rounded-lg"
+            className="rounded-lg h-9 w-9"
           >
             <Send className="h-4 w-4" />
           </Button>
