@@ -19,14 +19,6 @@ import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
-};
-
 const AppContent = () => {
   useEffect(() => {
     // Initialize theme from localStorage or system preference
@@ -42,6 +34,13 @@ const AppContent = () => {
   }, []);
 
   const { isAuthenticated } = useAuth();
+
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" replace />;
+    }
+    return children;
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
