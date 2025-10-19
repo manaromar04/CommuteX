@@ -3,17 +3,6 @@ import { User, Trip, Booking, Reward } from "./types";
 // Seed Users
 export const seedUsers: User[] = [
   {
-    id: "user_1",
-    name: "Salma",
-    role: "ADMIN",
-    email: "salma@commutex.com",
-    phone: "+971501234567",
-    wallet_balance_aed: 500,
-    tier: "GOLD",
-    reward_points: 250,
-    created_at: new Date("2024-01-01"),
-  },
-  {
     id: "user_2",
     name: "Huda",
     role: "PASSENGER",
