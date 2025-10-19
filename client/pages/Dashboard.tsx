@@ -211,12 +211,15 @@ export default function Dashboard() {
             wallet_balance_aed: currentUser.wallet_balance_aed + driverCommission,
           };
           setCurrentUser(updatedDriver);
+        } else {
+          setCurrentUser(updatedUser);
         }
 
         setUsers(updatedUsers);
+      } else {
+        setCurrentUser(updatedUser);
       }
 
-      setCurrentUser(updatedUser);
       setBookings([...bookings, newBooking]);
       setBookingRequests(
         bookingRequests.map((br) =>
