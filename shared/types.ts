@@ -77,3 +77,18 @@ export interface SmartHub {
   amenities: string[];
   created_at: Date;
 }
+
+// Voucher type
+export interface Voucher {
+  id: string;
+  user_id: string;
+  service: "SALIK" | "RTA";
+  code: string;
+  points_cost: number;
+  discount_aed: number;
+  status: "ACTIVE" | "EXPIRED" | "REDEEMED";
+  created_at: Date;
+  expires_at: Date;
+  redeemed_at?: Date;
+  description: string;
+}
