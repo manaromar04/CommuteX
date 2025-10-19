@@ -108,6 +108,7 @@ export default function Dashboard() {
       const seatsCount = bookingIdOrSeats;
       const fare = selectedTrip.fare_aed * seatsCount;
       const rewardPoints = selectedTrip.current_passengers + seatsCount >= 3 ? 80 : 40;
+      const driverCommission = fare * 0.8; // Driver gets 80% of fare
 
       const newBooking: Booking = {
         id: `booking_${Date.now()}`,
@@ -132,7 +133,19 @@ export default function Dashboard() {
         current_passengers: selectedTrip.current_passengers + seatsCount,
       };
 
+      // Credit driver's wallet
+      const updatedUsers = users.map((u) => {
+        if (u.id === selectedTrip.driver_id) {
+          return {
+            ...u,
+            wallet_balance_aed: u.wallet_balance_aed + driverCommission,
+          };
+        }
+        return u;
+      });
+
       setCurrentUser(updatedUser);
+      setUsers(updatedUsers);
       setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
       setBookings([...bookings, newBooking]);
       setLastBooking(newBooking);
@@ -144,6 +157,7 @@ export default function Dashboard() {
     // Case 2: Called from booking requests with full parameters
     if (typeof bookingIdOrSeats === "string" && tripId && seats && totalFare) {
       const bookingId = bookingIdOrSeats;
+      const driverCommission = totalFare * 0.8; // Driver gets 80% of fare
 
       const updatedUser = {
         ...currentUser,
@@ -169,6 +183,18 @@ export default function Dashboard() {
           available_seats: trip.available_seats - seats,
         };
         setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
+
+        // Credit driver's wallet
+        const updatedUsers = users.map((u) => {
+          if (u.id === trip.driver_id) {
+            return {
+              ...u,
+              wallet_balance_aed: u.wallet_balance_aed + driverCommission,
+            };
+          }
+          return u;
+        });
+        setUsers(updatedUsers);
       }
 
       setCurrentUser(updatedUser);
