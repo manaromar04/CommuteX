@@ -132,13 +132,19 @@ export function calculateTripRewards(
  * Get settlement summary for a trip
  */
 export function getTripSettlementSummary(tripCompletion: TripCompletion) {
+  const totalFare = calculateTotalFare(tripCompletion);
   const driverEarnings = calculateDriverEarnings(tripCompletion);
+  const rtaEarnings = calculateRTAEarnings(tripCompletion);
   const totalPassengers = tripCompletion.passengers.length;
   const rewards = calculateTripRewards(tripCompletion);
 
   return {
     tripId: tripCompletion.tripId,
+    totalFare,
     driverEarnings,
+    rtaEarnings,
+    driverCommissionRate: DRIVER_COMMISSION_RATE * 100,
+    rtaCommissionRate: RTA_COMMISSION_RATE * 100,
     totalPassengers,
     passengerDeductions: tripCompletion.passengers.map((p) => ({
       passengerId: p.passengerId,
