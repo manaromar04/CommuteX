@@ -1,6 +1,6 @@
 # CommuteX - Smart Commuting Platform for UAE 
-# Innovation Hackathon - Zaid University [TeamId: IH25077]
-# Developed by Manar Omar, Salma Rushdi, and Rana Alsttari (Ajman University)
+## Innovation Hackathon - Zaid University [TeamId: IH25077]
+### Developed by Manar Omar, Salma Rushdi, and Rana Alsttari (Ajman University)
 
 A modern, full-stack ride-sharing and carpooling application designed to revolutionize transportation in the UAE. CommuteX connects drivers and passengers with intelligent trip matching, real-time tracking, and integrated loyalty rewards.
 
