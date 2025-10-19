@@ -1236,7 +1236,9 @@ export default function Dashboard() {
         onClose={() => {
           setIsParkingModalOpen(false);
           setSelectedHub(null);
+          setSelectedHubConfig(null);
         }}
+        hubConfig={selectedHubConfig || undefined}
         onConfirm={handleParkingBooking}
       />
 
