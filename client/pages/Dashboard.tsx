@@ -144,7 +144,16 @@ export default function Dashboard() {
         return u;
       });
 
-      setCurrentUser(updatedUser);
+      // If current user is the driver, update their balance too
+      if (currentUser.id === selectedTrip.driver_id) {
+        const updatedDriver = {
+          ...currentUser,
+          wallet_balance_aed: currentUser.wallet_balance_aed + driverCommission,
+        };
+        setCurrentUser(updatedDriver);
+      } else {
+        setCurrentUser(updatedUser);
+      }
       setUsers(updatedUsers);
       setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
       setBookings([...bookings, newBooking]);
