@@ -28,9 +28,16 @@ export interface WalletSettlement {
 }
 
 /**
- * Calculate total earnings for a driver after a trip completion
+ * Commission split constants
+ * Driver receives 65%, RTA receives 35% of each fare
  */
-export function calculateDriverEarnings(tripCompletion: TripCompletion): number {
+const DRIVER_COMMISSION_RATE = 0.65;
+const RTA_COMMISSION_RATE = 0.35;
+
+/**
+ * Calculate total fare collected from passengers
+ */
+export function calculateTotalFare(tripCompletion: TripCompletion): number {
   return tripCompletion.passengers.reduce(
     (sum, passenger) => sum + passenger.totalFare,
     0
@@ -38,8 +45,24 @@ export function calculateDriverEarnings(tripCompletion: TripCompletion): number 
 }
 
 /**
+ * Calculate total earnings for a driver after a trip completion (65% of total fare)
+ */
+export function calculateDriverEarnings(tripCompletion: TripCompletion): number {
+  const totalFare = calculateTotalFare(tripCompletion);
+  return totalFare * DRIVER_COMMISSION_RATE;
+}
+
+/**
+ * Calculate earnings for RTA after a trip completion (35% of total fare)
+ */
+export function calculateRTAEarnings(tripCompletion: TripCompletion): number {
+  const totalFare = calculateTotalFare(tripCompletion);
+  return totalFare * RTA_COMMISSION_RATE;
+}
+
+/**
  * Settle payments for a completed trip
- * Deducts fare from passengers and adds to driver earnings
+ * Deducts fare from passengers, splits earnings: 65% to driver, 35% to RTA
  */
 export function settleTripPayments(tripCompletion: TripCompletion) {
   const walletUpdates: Array<{
@@ -49,13 +72,17 @@ export function settleTripPayments(tripCompletion: TripCompletion) {
     reason: string;
   }> = [];
 
-  // Add driver earnings
+  // Calculate split earnings
+  const totalFare = calculateTotalFare(tripCompletion);
   const driverEarnings = calculateDriverEarnings(tripCompletion);
+  const rtaEarnings = calculateRTAEarnings(tripCompletion);
+
+  // Add driver earnings (65% of total fare)
   walletUpdates.push({
     userId: tripCompletion.driverId,
     amountChange: driverEarnings,
     type: "credit",
-    reason: `Trip earnings from ${tripCompletion.passengers.length} passengers`,
+    reason: `Trip earnings from ${tripCompletion.passengers.length} passengers (65% of ${totalFare.toFixed(2)} AED)`,
   });
 
   // Deduct from passengers
