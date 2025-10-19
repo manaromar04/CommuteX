@@ -132,7 +132,9 @@ export function RedeemVouchersModal({
             Redeem Vouchers
           </DialogTitle>
           <DialogDescription>
-            Convert your reward points into discounts for Salik tolls and RTA parking
+            {isDriver
+              ? "Convert your reward points into discounts for fuel, tolls, and parking"
+              : "Convert your reward points into discounts for tolls and parking"}
           </DialogDescription>
         </DialogHeader>
 
