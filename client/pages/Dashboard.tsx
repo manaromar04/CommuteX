@@ -125,18 +125,6 @@ export default function Dashboard() {
       const rewardPoints = selectedTrip.current_passengers + seatsCount >= 3 ? 80 : 40;
       const driverCommission = fare * 0.8; // Driver gets 80% of fare
 
-      console.log("[Case 1] Passenger booking trip:", {
-        passengerId: currentUser.id,
-        tripId: selectedTrip.id,
-        driverId: selectedTrip.driver_id,
-        seats: seatsCount,
-        fare,
-        rewardPoints,
-        driverCommission,
-        currentWallet: currentUser.wallet_balance_aed,
-        newWallet: currentUser.wallet_balance_aed - fare,
-      });
-
       const newBooking: Booking = {
         id: `booking_${Date.now()}`,
         trip_id: selectedTrip.id,
@@ -164,35 +152,21 @@ export default function Dashboard() {
       const updatedUsers = users.map((u) => {
         // Update passenger wallet
         if (u.id === currentUser.id) {
-          const newBalance = u.wallet_balance_aed - fare;
-          console.log("[Case 1] Updating passenger in users array:", {
-            id: u.id,
-            oldBalance: u.wallet_balance_aed,
-            newBalance,
-          });
           return {
             ...u,
-            wallet_balance_aed: newBalance,
+            wallet_balance_aed: u.wallet_balance_aed - fare,
             reward_points: u.reward_points + rewardPoints,
           };
         }
         // Credit driver's wallet
         if (u.id === selectedTrip.driver_id) {
-          const newBalance = u.wallet_balance_aed + driverCommission;
-          console.log("[Case 1] Updating driver in users array:", {
-            id: u.id,
-            oldBalance: u.wallet_balance_aed,
-            newBalance,
-          });
           return {
             ...u,
-            wallet_balance_aed: newBalance,
+            wallet_balance_aed: u.wallet_balance_aed + driverCommission,
           };
         }
         return u;
       });
-
-      console.log("[Case 1] Updated users array:", updatedUsers);
 
       // Update currentUser directly for immediate UI feedback
       setCurrentUser(updatedUser);
