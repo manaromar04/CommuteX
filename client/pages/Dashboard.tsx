@@ -218,11 +218,27 @@ export default function Dashboard() {
       const driverCommission = totalFare * 0.8; // Driver gets 80% of fare
 
       const trip = trips.find((t) => t.id === tripId);
-      if (!trip) return;
+      if (!trip) {
+        console.warn("[Case 2] Trip not found:", tripId);
+        return;
+      }
 
       // Find the booking request to get passenger info
       const bookingReq = bookingRequests.find((br) => br.id === bookingId);
-      if (!bookingReq) return;
+      if (!bookingReq) {
+        console.warn("[Case 2] Booking request not found:", bookingId);
+        return;
+      }
+
+      console.log("[Case 2] Driver approving booking request:", {
+        bookingId,
+        passengerId: bookingReq.passengerId,
+        tripId,
+        driverId: trip.driver_id,
+        seats,
+        totalFare,
+        driverCommission,
+      });
 
       const newBooking: Booking = {
         id: bookingId,
@@ -239,21 +255,35 @@ export default function Dashboard() {
       const updatedUsers = users.map((u) => {
         // Deduct from passenger's wallet
         if (u.id === bookingReq.passengerId) {
+          const newBalance = u.wallet_balance_aed - totalFare;
+          console.log("[Case 2] Deducting from passenger:", {
+            id: u.id,
+            oldBalance: u.wallet_balance_aed,
+            newBalance,
+          });
           return {
             ...u,
-            wallet_balance_aed: u.wallet_balance_aed - totalFare,
+            wallet_balance_aed: newBalance,
             reward_points: u.reward_points + (seats >= 3 ? 80 : 0),
           };
         }
         // Credit driver's wallet
         if (u.id === trip.driver_id) {
+          const newBalance = u.wallet_balance_aed + driverCommission;
+          console.log("[Case 2] Crediting driver:", {
+            id: u.id,
+            oldBalance: u.wallet_balance_aed,
+            newBalance,
+          });
           return {
             ...u,
-            wallet_balance_aed: u.wallet_balance_aed + driverCommission,
+            wallet_balance_aed: newBalance,
           };
         }
         return u;
       });
+
+      console.log("[Case 2] Updated users array:", updatedUsers);
 
       // Update trip
       const updatedTrip = {
