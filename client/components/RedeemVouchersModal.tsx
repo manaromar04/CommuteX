@@ -83,12 +83,15 @@ export function RedeemVouchersModal({
   onOpenChange,
   userPoints,
   onRedeem,
+  isDriver = false,
 }: RedeemVouchersModalProps) {
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [redeemedVouchers, setRedeemedVouchers] = useState<
     Array<{ code: string; service: ServiceType; expires: Date }>
   >([]);
+
+  const voucherList = isDriver ? driverVouchers : passengerVouchers;
 
   const handleRedeem = (service: ServiceType, points: number, discount: number) => {
     if (userPoints < points) return;
