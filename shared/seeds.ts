@@ -8,9 +8,9 @@ export const seedUsers: User[] = [
     role: "PASSENGER",
     email: "huda@email.com",
     phone: "+971502345678",
-    wallet_balance_aed: 250,
+    wallet_balance_aed: 180, // 250 - 50 (booking_1) - 20 (booking_2) = 180
     tier: "SILVER",
-    reward_points: 120,
+    reward_points: 240, // 120 + 80 (booking_1) + 40 (booking_2) = 240
     created_at: new Date("2024-01-05"),
   },
   {
@@ -19,7 +19,7 @@ export const seedUsers: User[] = [
     role: "DRIVER",
     email: "manar@email.com",
     phone: "+971504567890",
-    wallet_balance_aed: 800,
+    wallet_balance_aed: 856, // 800 + 40 (50*0.8 from booking_1) + 16 (20*0.8 from booking_2) = 856
     tier: "GOLD",
     reward_points: 320,
     created_at: new Date("2023-12-15"),
