@@ -67,7 +67,7 @@ export function ParkingModal({
 
     setShowConfirmation(true);
     setTimeout(() => {
-      onConfirm(hubConfig);
+      onConfirm(hubConfig, finalCost, bonusPoints);
     }, 3000);
   };
 
