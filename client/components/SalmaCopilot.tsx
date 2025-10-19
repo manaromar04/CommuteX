@@ -23,13 +23,14 @@ interface ConversationOption {
   nextStep?: string;
 }
 
-type ConversationStep = 
+type ConversationStep =
   | "greeting"
   | "main_menu"
   | "trip_help"
   | "trip_details"
   | "rewards_help"
   | "rewards_details"
+  | "rewards_redeem"
   | "hubs_help"
   | "hubs_details"
   | "technical_help"
