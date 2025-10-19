@@ -76,8 +76,6 @@ const driverVouchers: VoucherOption[] = [
   },
 ];
 
-const voucherOptions = driverVouchers;
-
 export function RedeemVouchersModal({
   open,
   onOpenChange,
