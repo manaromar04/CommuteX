@@ -5,15 +5,21 @@ import { SalmaCopilot } from "@/components/SalmaCopilot";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BookingModal } from "@/components/BookingModal";
+import { BookingSuccess } from "@/components/BookingSuccess";
 import { seedUsers, seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking } from "@shared/types";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle } from "lucide-react";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("passenger");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [lastBooking, setLastBooking] = useState<Booking | null>(null);
+  const [showBookingSuccess, setShowBookingSuccess] = useState(false);
 
   useEffect(() => {
     // Initialize with seed data
@@ -22,6 +28,54 @@ export default function Dashboard() {
     setTrips(seedTrips);
     setBookings(seedBookings);
   }, []);
+
+  const handleBookTrip = (trip: Trip) => {
+    setSelectedTrip(trip);
+    setIsBookingModalOpen(true);
+  };
+
+  const handleConfirmBooking = (seats: number) => {
+    if (!selectedTrip || !currentUser) return;
+
+    const totalFare = selectedTrip.fare_aed * seats;
+    const rewardPoints = selectedTrip.current_passengers + seats >= 3 ? 80 : 40;
+
+    // Create new booking
+    const newBooking: Booking = {
+      id: `booking_${Date.now()}`,
+      trip_id: selectedTrip.id,
+      passenger_id: currentUser.id,
+      seats_booked: seats,
+      total_fare_aed: totalFare,
+      status: "CONFIRMED",
+      reward_points_earned: rewardPoints,
+      created_at: new Date(),
+    };
+
+    // Update user wallet and points
+    const updatedUser = {
+      ...currentUser,
+      wallet_balance_aed: currentUser.wallet_balance_aed - totalFare,
+      reward_points: currentUser.reward_points + rewardPoints,
+    };
+
+    // Update trip available seats
+    const updatedTrip = {
+      ...selectedTrip,
+      available_seats: selectedTrip.available_seats - seats,
+      current_passengers: selectedTrip.current_passengers + seats,
+    };
+
+    // Update state
+    setCurrentUser(updatedUser);
+    setTrips(trips.map((t) => (t.id === selectedTrip.id ? updatedTrip : t)));
+    setBookings([...bookings, newBooking]);
+    setLastBooking(newBooking);
+
+    // Show success modal
+    setIsBookingModalOpen(false);
+    setShowBookingSuccess(true);
+  };
 
   const getTierColor = (tier: string) => {
     const colors: Record<string, string> = {
@@ -78,12 +132,49 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-500">
-              {bookings.length}
+              {bookings.filter((b) => b.passenger_id === currentUser?.id).length}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Completed journeys</p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Recent Bookings */}
+      {bookings.filter((b) => b.passenger_id === currentUser?.id).length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Recent Bookings</CardTitle>
+            <CardDescription>Trips you've booked</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {bookings
+              .filter((b) => b.passenger_id === currentUser?.id)
+              .slice(-3)
+              .map((booking) => {
+                const trip = trips.find((t) => t.id === booking.trip_id);
+                return (
+                  <div
+                    key={booking.id}
+                    className="flex items-center justify-between p-3 border border-border rounded-lg bg-muted/30"
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-foreground text-sm truncate">
+                          {trip?.origin} → {trip?.destination}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {booking.seats_booked} seat{booking.seats_booked > 1 ? "s" : ""} • {booking.total_fare_aed} AED
+                        </p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">{booking.status}</Badge>
+                  </div>
+                );
+              })}
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
@@ -91,38 +182,50 @@ export default function Dashboard() {
           <CardDescription>Book your next carpool journey</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {trips.map((trip) => (
-            <div
-              key={trip.id}
-              className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-            >
-              <div className="flex-1 space-y-2">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <span className="font-medium text-foreground">
-                    {trip.origin} → {trip.destination}
-                  </span>
-                </div>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {new Date(trip.departure_time).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {trip.available_seats} seats available
-                  </div>
-                  <span className="font-semibold text-primary">
-                    {trip.fare_aed} AED
-                  </span>
-                </div>
-              </div>
-              <Button className="ml-4">Book</Button>
+          {trips.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No trips available at the moment.</p>
             </div>
-          ))}
+          ) : (
+            trips.map((trip) => (
+              <div
+                key={trip.id}
+                className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+              >
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-primary" />
+                    <span className="font-medium text-foreground">
+                      {trip.origin} → {trip.destination}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {new Date(trip.departure_time).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Users className="h-4 w-4" />
+                      {trip.available_seats} seats available
+                    </div>
+                    <span className="font-semibold text-primary">
+                      {trip.fare_aed} AED
+                    </span>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => handleBookTrip(trip)}
+                  disabled={trip.available_seats === 0}
+                  className="ml-4"
+                >
+                  {trip.available_seats > 0 ? "Book" : "Full"}
+                </Button>
+              </div>
+            ))
+          )}
         </CardContent>
       </Card>
     </div>
