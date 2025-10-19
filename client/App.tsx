@@ -74,16 +74,6 @@ const AppContent = () => {
               }
             />
 
-            {/* Admin Routes */}
-            <Route
-              path="/admin/dashboard"
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-
             {/* Legacy dashboard route - redirect based on role */}
             <Route
               path="/dashboard"
