@@ -265,12 +265,7 @@ export default function Dashboard() {
       requestedAt: new Date().toLocaleString(),
     };
 
-    setBookingRequests([...bookingRequests, bookingRequest]);
-
-    // Auto-confirm for demo (in real app, driver would confirm)
-    setTimeout(() => {
-      handleConfirmBooking(bookingRequest.id, tripId, seats, totalFare);
-    }, 500);
+    setBookingRequests((prev) => [...prev, bookingRequest]);
   };
 
   // Handle decline booking request
