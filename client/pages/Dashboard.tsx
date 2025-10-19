@@ -620,33 +620,25 @@ export default function Dashboard() {
     </div>
   );
 
-  const handleParkingBooking = () => {
-    if (!selectedHub || !currentUser) return;
+  const handleParkingBooking = (hubConfig?: typeof HUBS[0]) => {
+    if (!selectedHub || !currentUser || !hubConfig) return;
 
-    const parkingCost = 20; // 5 AED/hour * 4 hours default
-    const rewardPoints = 40; // Park & Ride bonus
-
-    // Update user wallet and points
+    // Points are deducted during modal confirmation
+    // Update user's reward points with bonus if using public transport
+    const bonusPoints = 50; // This would come from the modal state
     const updatedUser = {
       ...currentUser,
-      wallet_balance_aed: currentUser.wallet_balance_aed - parkingCost,
-      reward_points: currentUser.reward_points + rewardPoints,
+      reward_points: Math.max(0, currentUser.reward_points - hubConfig.parking_points_cost + bonusPoints),
     };
 
     setCurrentUser(updatedUser);
     setIsParkingModalOpen(false);
+    setSelectedHubConfig(null);
 
-    // Show success notification
-    const notification = document.createElement("div");
-    notification.className =
-      "fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-in fade-in slide-in-from-top-4";
-    notification.innerHTML = `
-      <p class="font-semibold">Parking Space Booked!</p>
-      <p class="text-sm">20 AED charged • +40 Reward Points earned</p>
-    `;
-    document.body.appendChild(notification);
-
-    setTimeout(() => notification.remove(), 3000);
+    toast({
+      title: "Parking Booked Successfully!",
+      description: `${hubConfig.parking_points_cost} reward points deducted. New balance: ${updatedUser.reward_points} points.`,
+    });
   };
 
   // Mock corridor data
