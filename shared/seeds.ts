@@ -145,3 +145,31 @@ export const seedBookingRequests = [
     requestedAt: new Date().toLocaleString(),
   },
 ];
+
+// Seed Vouchers
+export const seedVouchers: Voucher[] = [
+  {
+    id: "voucher_1",
+    user_id: "user_2",
+    service: "SALIK",
+    code: "SALIK-5TM2X-9KL4P",
+    points_cost: 150,
+    discount_aed: 50,
+    status: "ACTIVE",
+    created_at: new Date("2024-01-18"),
+    expires_at: new Date("2024-02-18"),
+    description: "50 AED discount on Salik tolls",
+  },
+  {
+    id: "voucher_2",
+    user_id: "user_2",
+    service: "RTA",
+    code: "RTA-8FH1D-6JN3Q",
+    points_cost: 120,
+    discount_aed: 30,
+    status: "ACTIVE",
+    created_at: new Date("2024-01-17"),
+    expires_at: new Date("2024-02-17"),
+    description: "30 AED discount on RTA parking",
+  },
+];
