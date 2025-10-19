@@ -1437,28 +1437,38 @@ export default function Dashboard() {
         onOpenChange={setIsTripCompletionModalOpen}
         trip={
           selectedTripForCompletion
-            ? {
-                id: selectedTripForCompletion.id,
-                origin: selectedTripForCompletion.origin,
-                destination: selectedTripForCompletion.destination,
-                carType: "SEDAN",
-                passengers: bookings
+            ? (() => {
+                const tripPassengers = bookings
                   .filter((b) => b.trip_id === selectedTripForCompletion.id)
                   .map((b) => ({
                     passengerId: b.passenger_id,
-                    passengerName: "Passenger",
                     seatsBooked: b.seats_booked,
                     farePerPassenger: b.total_fare_aed / b.seats_booked,
                     totalFare: b.total_fare_aed,
+                  }));
+
+                const tripCompletion = {
+                  tripId: selectedTripForCompletion.id,
+                  driverId: currentUser?.id || "",
+                  passengers: tripPassengers,
+                  carType: "SEDAN" as const,
+                  distanceKm: 40,
+                  completedAt: new Date().toISOString(),
+                };
+
+                return {
+                  id: selectedTripForCompletion.id,
+                  origin: selectedTripForCompletion.origin,
+                  destination: selectedTripForCompletion.destination,
+                  carType: "SEDAN",
+                  passengers: tripPassengers.map((p) => ({
+                    ...p,
+                    passengerName: "Passenger",
                   })),
-                driverEarnings: bookings
-                  .filter((b) => b.trip_id === selectedTripForCompletion.id)
-                  .reduce((sum, b) => sum + b.total_fare_aed, 0),
-                rewardPoints: bookings.filter((b) => b.trip_id === selectedTripForCompletion.id)
-                  .length >= 3
-                  ? 80
-                  : 0,
-              }
+                  driverEarnings: calculateDriverEarnings(tripCompletion),
+                  rewardPoints: tripPassengers.length >= 3 ? 80 : 0,
+                };
+              })()
             : undefined
         }
         onCompleteTrip={handleCompleteTrip}
