@@ -15,13 +15,16 @@ interface Trip {
   origin: string;
   destination: string;
   date: string;
-  departureTime: string;
-  fare: number;
-  availableSeats: number;
-  bookedSeats: number;
+  departure_time: string;
+  distance_km: number;
+  fare_per_passenger: number;
+  fare_base_per_passenger: number;
+  total_fare: number;
+  available_seats: number;
+  booked_seats?: number;
+  car_type: string;
   status: "active" | "completed" | "cancelled";
-  passengers: number;
-  earnings: number;
+  passengers?: number;
 }
 
 interface MyTripsModalProps {
@@ -37,52 +40,64 @@ export function MyTripsModal({ open, onOpenChange, onTripDeleted }: MyTripsModal
       origin: "Sharjah",
       destination: "Dubai",
       date: "2024-01-15",
-      departureTime: "07:30",
-      fare: 50,
-      availableSeats: 4,
-      bookedSeats: 3,
+      departure_time: "07:30",
+      distance_km: 40,
+      fare_per_passenger: 15.75,
+      fare_base_per_passenger: 17.5,
+      total_fare: 70,
+      available_seats: 4,
+      booked_seats: 3,
+      car_type: "SEDAN",
       status: "active",
       passengers: 3,
-      earnings: 150,
     },
     {
       id: "trip_002",
       origin: "Ajman",
       destination: "Dubai",
       date: "2024-01-15",
-      departureTime: "09:00",
-      fare: 40,
-      availableSeats: 4,
-      bookedSeats: 2,
+      departure_time: "09:00",
+      distance_km: 35,
+      fare_per_passenger: 13.5,
+      fare_base_per_passenger: 15,
+      total_fare: 60,
+      available_seats: 4,
+      booked_seats: 2,
+      car_type: "SEDAN",
       status: "active",
       passengers: 2,
-      earnings: 80,
     },
     {
       id: "trip_003",
       origin: "Sharjah",
       destination: "Dubai",
       date: "2024-01-14",
-      departureTime: "07:30",
-      fare: 50,
-      availableSeats: 4,
-      bookedSeats: 4,
+      departure_time: "07:30",
+      distance_km: 40,
+      fare_per_passenger: 15.75,
+      fare_base_per_passenger: 17.5,
+      total_fare: 70,
+      available_seats: 4,
+      booked_seats: 4,
+      car_type: "SEDAN",
       status: "completed",
       passengers: 4,
-      earnings: 200,
     },
     {
       id: "trip_004",
       origin: "Sharjah",
       destination: "Abu Dhabi",
       date: "2024-01-13",
-      departureTime: "06:00",
-      fare: 60,
-      availableSeats: 4,
-      bookedSeats: 3,
+      departure_time: "06:00",
+      distance_km: 50,
+      fare_per_passenger: 19.35,
+      fare_base_per_passenger: 21.5,
+      total_fare: 64.5,
+      available_seats: 4,
+      booked_seats: 3,
+      car_type: "SUV",
       status: "completed",
       passengers: 3,
-      earnings: 180,
     },
   ];
 
@@ -101,7 +116,10 @@ export function MyTripsModal({ open, onOpenChange, onTripDeleted }: MyTripsModal
 
   const activeTrips = trips.filter((t) => t.status === "active");
   const completedTrips = trips.filter((t) => t.status === "completed");
-  const totalEarnings = trips.reduce((sum, t) => sum + t.earnings, 0);
+  const totalEarnings = trips.reduce(
+    (sum, t) => sum + (t.fare_per_passenger * (t.booked_seats || 0)),
+    0
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -155,11 +173,11 @@ export function MyTripsModal({ open, onOpenChange, onTripDeleted }: MyTripsModal
                               </span>
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {trip.departureTime}
+                                {trip.departure_time}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Users className="h-3 w-3" />
-                                {trip.bookedSeats}/{trip.availableSeats} seats
+                                {trip.booked_seats || 0}/{trip.available_seats} seats
                               </span>
                             </div>
                           </div>
@@ -169,15 +187,19 @@ export function MyTripsModal({ open, onOpenChange, onTripDeleted }: MyTripsModal
                         </div>
 
                         {/* Trip Details */}
-                        <div className="grid grid-cols-2 gap-2 text-sm pt-2 border-t border-border">
+                        <div className="grid grid-cols-3 gap-2 text-sm pt-2 border-t border-border">
                           <div>
-                            <p className="text-muted-foreground">Fare per seat</p>
-                            <p className="font-semibold text-foreground">{trip.fare} AED</p>
+                            <p className="text-muted-foreground">Vehicle</p>
+                            <p className="font-semibold text-foreground">{trip.car_type}</p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Potential earnings</p>
+                            <p className="text-muted-foreground">Fare/Passenger</p>
+                            <p className="font-semibold text-foreground">{trip.fare_per_passenger} AED</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Current Earnings</p>
                             <p className="font-semibold text-green-600">
-                              {trip.fare * trip.bookedSeats} AED
+                              {(trip.fare_per_passenger * (trip.booked_seats || 0)).toFixed(2)} AED
                             </p>
                           </div>
                         </div>
@@ -229,11 +251,13 @@ export function MyTripsModal({ open, onOpenChange, onTripDeleted }: MyTripsModal
                             {trip.origin} → {trip.destination}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
-                            {trip.date} • {trip.passengers} passengers
+                            {trip.date} • {trip.passengers} passengers • {trip.car_type}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-green-600">+{trip.earnings} AED</p>
+                          <p className="font-semibold text-green-600">
+                            +{(trip.fare_per_passenger * (trip.passengers || 0)).toFixed(2)} AED
+                          </p>
                           <Badge variant="outline" className="mt-1">
                             Completed
                           </Badge>
