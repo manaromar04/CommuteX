@@ -8,7 +8,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-UAE-red)
 
-## 🚀 Features
+##  Features
 
 ### For Drivers
 
@@ -32,7 +32,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Voucher Redemption**: Redeem rewards for fuel and parking discounts
 
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend
 
@@ -65,7 +65,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Netlify** - Hosting & CI/CD
 - **Vite** - Production builds
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── client/                          # React SPA Frontend
@@ -112,7 +112,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 ```
 
 
-## 📱 Key Workflows
+##  Key Workflows
 
 ### Driver Trip Completion Flow
 
@@ -144,7 +144,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 3. Points deducted from reward balance
 4. Voucher code generated with expiration date
 
-## 💳 Commission & Pricing Model
+##  Commission & Pricing Model
 
 ### Trip Commission Split (65/35)
 
@@ -166,7 +166,7 @@ When a passenger books a trip:
 - **Park & Ride Booking**: 40 points per booking
 - **Bonus Multipliers**: Based on tier level (Bronze → Platinum)
 
-## 🔐 Authentication & Authorization
+##  Authentication & Authorization
 
 The app uses role-based access control:
 
@@ -187,7 +187,7 @@ The app uses role-based access control:
 - Email: `huda@email.com`
 - Role: Passenger with bookings
 
-## 📊 Data Models
+##  Data Models
 
 ### User
 
@@ -238,7 +238,7 @@ interface Booking {
 }
 ```
 
-## 🛣️ API Endpoints
+##  API Endpoints
 
 The backend provides RESTful API endpoints (built with Express):
 
@@ -252,7 +252,7 @@ POST   /api/trips/complete/:id      # Complete trip & settle
 GET    /api/earnings/:driverId      # Get driver earnings
 ```
 
-## 🎨 UI Components
+##  UI Components
 
 The app includes a comprehensive Radix UI component library:
 
@@ -265,7 +265,7 @@ The app includes a comprehensive Radix UI component library:
 
 All components are styled with TailwindCSS and support dark mode.
 
-## 🧪 Testing
+##  Testing
 
 Run tests with:
 
@@ -273,7 +273,7 @@ Run tests with:
 pnpm test
 ```
 
-## 📈 Performance Features
+##  Performance Features
 
 - **Code Splitting**: Automatic route-based code splitting
 - **Image Optimization**: Lazy loading for images
@@ -281,7 +281,7 @@ pnpm test
 - **Real-time Updates**: Instant UI updates on wallet/rewards
 - **Hot Reload**: Rapid development with full HMR
 
-## 🌐 Deployment
+##  Deployment
 
 ### Deploy to Netlify
 
@@ -297,7 +297,7 @@ pnpm test
 2. Vercel auto-detects the configuration
 3. Deploy on every push to main
 
-## 📝 Environment Variables
+##  Environment Variables
 
 Create a `.env` file for local development:
 
@@ -307,7 +307,7 @@ Create a `.env` file for local development:
 # VITE_API_BASE_URL=http://localhost:8080
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please follow these steps:
 
@@ -326,7 +326,7 @@ We welcome contributions! Please follow these steps:
 - Add tests for new features
 
 
-## 👥 Support
+##  Support
 
 For issues and questions:
 
@@ -334,7 +334,7 @@ For issues and questions:
 - Check existing documentation
 - Review the AGENTS.md for development guidelines
 
-## 🎯 Roadmap
+##  Roadmap
 
 - [ ] Real-time GPS tracking
 - [ ] Payment gateway integration (credit/debit cards)
