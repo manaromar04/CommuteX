@@ -23,7 +23,7 @@ import { VoucherCard } from "@/components/VoucherCard";
 import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, Car, Settings, Tag } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { calculateCarpoolRewards } from "@/lib/rewards";
-import { settleTripPayments, getTripSettlementSummary } from "@/lib/tripCompletion";
+import { settleTripPayments, getTripSettlementSummary, calculateDriverEarnings, calculateTotalFare } from "@/lib/tripCompletion";
 import { useToast } from "@/hooks/use-toast";
 import { HUBS, getHubById } from "@/lib/hubs";
 
