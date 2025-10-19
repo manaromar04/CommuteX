@@ -156,7 +156,7 @@ export function TripCompletionModal({
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
-                    Your Earnings
+                    Your Earnings (65%)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -188,6 +188,33 @@ export function TripCompletionModal({
                 </CardContent>
               </Card>
             </div>
+
+            {/* Commission Breakdown */}
+            <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
+              <CardHeader>
+                <CardTitle className="text-sm">Commission Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Total Fare:</span>
+                  <span className="font-semibold">
+                    {trip.passengers.reduce((sum, p) => sum + p.totalFare, 0).toFixed(2)} AED
+                  </span>
+                </div>
+                <div className="border-t border-blue-200 dark:border-blue-800 pt-2 mt-2">
+                  <div className="flex justify-between text-green-700 dark:text-green-300">
+                    <span>Your Share (65%):</span>
+                    <span className="font-semibold">+{trip.driverEarnings.toFixed(2)} AED</span>
+                  </div>
+                  <div className="flex justify-between text-blue-700 dark:text-blue-300 mt-1">
+                    <span>RTA Commission (35%):</span>
+                    <span className="font-semibold">
+                      {(trip.passengers.reduce((sum, p) => sum + p.totalFare, 0) - trip.driverEarnings).toFixed(2)} AED
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Bonuses Info */}
             {carpoolBonus && (
