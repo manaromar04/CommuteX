@@ -8,9 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { User } from "@shared/types";
-import { MapPin, Clock } from "lucide-react";
+import { MapPin, Zap, TrendingUp, AlertCircle, CheckCircle } from "lucide-react";
 import { useState } from "react";
+import { Hub as HubType, calculateParkingCost } from "@/lib/hubs";
+import {
+  createParkingBooking,
+  processParkingDeduction,
+} from "@/lib/parkingBooking";
 
 interface Hub {
   name: string;
@@ -24,7 +30,8 @@ interface ParkingModalProps {
   user: User | null;
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (hubConfig?: HubType) => void;
+  hubConfig?: HubType;
 }
 
 export function ParkingModal({
@@ -42,13 +49,12 @@ export function ParkingModal({
 
   const currentHour = new Date().getHours();
   const baseCost = calculateParkingCost(hubConfig, currentHour);
-  const isPeakHour = currentHour >= hubConfig.peak_hours.start && currentHour < hubConfig.peak_hours.end;
+  const isPeakHour =
+    currentHour >= hubConfig.peak_hours.start &&
+    currentHour < hubConfig.peak_hours.end;
 
-  const { booking, pointsCost, discountApplied, finalCost } = createParkingBooking(
-    user.id,
-    hubConfig,
-    0 // parking count - in real app would be tracked
-  );
+  const { booking, pointsCost, discountApplied, finalCost } =
+    createParkingBooking(user.id, hubConfig, 0);
 
   const validation = processParkingDeduction(user.reward_points, booking);
   const canBook = validation.success;
@@ -56,14 +62,8 @@ export function ParkingModal({
   const handleConfirm = () => {
     if (!validation.success) return;
 
-    // Calculate any bonuses
-    const bonusResult = applyParkAndRideBonus(
-      validation.newBalance || 0,
-      hubConfig,
-      usedPublicTransport
-    );
-
-    const finalBalance = bonusResult.newBalance;
+    const bonusPoints = usedPublicTransport ? hubConfig.bonus_points_on_metro_usage : 0;
+    const finalBalance = (validation.newBalance || 0) + bonusPoints;
 
     setShowConfirmation(true);
     setTimeout(() => {
@@ -72,7 +72,9 @@ export function ParkingModal({
   };
 
   if (showConfirmation) {
-    const finalBalance = (validation.newBalance || 0) + (usedPublicTransport ? hubConfig.bonus_points_on_metro_usage : 0);
+    const bonusPoints = usedPublicTransport ? hubConfig.bonus_points_on_metro_usage : 0;
+    const finalBalance = (validation.newBalance || 0) + bonusPoints;
+
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="sm:max-w-[500px]">
@@ -83,7 +85,9 @@ export function ParkingModal({
               </div>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground text-lg">Parking Confirmed!</h3>
+              <h3 className="font-semibold text-foreground text-lg">
+                Parking Confirmed!
+              </h3>
               <p className="text-sm text-muted-foreground mt-2">
                 Your parking at {hub.name} is confirmed
               </p>
@@ -95,7 +99,9 @@ export function ParkingModal({
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Duration:</span>
-                <span className="font-medium">{hubConfig.parking_duration_hours} hours</span>
+                <span className="font-medium">
+                  {hubConfig.parking_duration_hours} hours
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Points Deducted:</span>
@@ -110,7 +116,9 @@ export function ParkingModal({
               {usedPublicTransport && (
                 <div className="flex justify-between text-sm text-green-600">
                   <span>Park & Ride Bonus:</span>
-                  <span className="font-medium">+{hubConfig.bonus_points_on_metro_usage} pts</span>
+                  <span className="font-medium">
+                    +{hubConfig.bonus_points_on_metro_usage} pts
+                  </span>
                 </div>
               )}
               <div className="border-t border-border pt-2 flex justify-between font-bold">
@@ -157,9 +165,7 @@ export function ParkingModal({
                   <div
                     className="bg-primary h-2 rounded-full"
                     style={{
-                      width: `${
-                        ((hub.capacity - hub.current_vehicles) / hub.capacity) * 100
-                      }%`,
+                      width: `${((hub.capacity - hub.current_vehicles) / hub.capacity) * 100}%`,
                     }}
                   />
                 </div>
@@ -175,7 +181,9 @@ export function ParkingModal({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Duration</p>
-                <p className="font-semibold text-foreground">{hubConfig.parking_duration_hours} hours</p>
+                <p className="font-semibold text-foreground">
+                  {hubConfig.parking_duration_hours} hours
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Base Cost</p>
@@ -189,7 +197,9 @@ export function ParkingModal({
             {isPeakHour && (
               <div className="border-t border-border pt-3">
                 <p className="text-xs text-orange-600 dark:text-orange-400">
-                  ⚠️ Peak hour surcharge: {Math.round(hubConfig.peak_hours.multiplier * 100 - 100)}% applied
+                  ⚠️ Peak hour surcharge:{" "}
+                  {Math.round(hubConfig.peak_hours.multiplier * 100 - 100)}%
+                  applied
                 </p>
               </div>
             )}
@@ -216,13 +226,17 @@ export function ParkingModal({
           {/* User Points Balance */}
           <Card className="p-4 space-y-2">
             <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Your Reward Points:</span>
-              <span className="font-bold text-yellow-600">{user.reward_points} points</span>
+              <span className="text-sm text-muted-foreground">
+                Your Reward Points:
+              </span>
+              <span className="font-bold text-yellow-600">
+                {user.reward_points} points
+              </span>
             </div>
             {canBook && (
               <div className="flex justify-between text-sm text-green-600">
                 <span>After Booking:</span>
-                <span className="font-semibold">{validation.newBalance} points</span>
+                <span className="font-semibold">{validation.newBalance}</span>
               </div>
             )}
           </Card>
