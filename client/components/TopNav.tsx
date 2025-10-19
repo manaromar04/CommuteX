@@ -97,12 +97,6 @@ export function TopNav({
                 >
                   Driver
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setUserRole("ADMIN")}
-                  disabled={userRole === "ADMIN"}
-                >
-                  Admin
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )}
