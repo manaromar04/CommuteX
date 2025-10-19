@@ -30,7 +30,7 @@ interface ParkingModalProps {
   user: User | null;
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (hubConfig?: HubType) => void;
+  onConfirm: (hubConfig?: HubType, pointsCost?: number, bonusPoints?: number) => void;
   hubConfig?: HubType;
 }
 
