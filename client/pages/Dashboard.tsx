@@ -30,6 +30,7 @@ export default function Dashboard() {
   const { user: authUser, logout, userRole } = useAuth();
   const [activeTab, setActiveTab] = useState("passenger");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
