@@ -148,11 +148,12 @@ export const seedBookingRequests = [
 
 // Seed Vouchers
 export const seedVouchers: Voucher[] = [
+  // Passenger Vouchers (Huda - user_2)
   {
     id: "voucher_1",
     user_id: "user_2",
     service: "SALIK",
-    code: "SALIK-5TM2X-9KL4P",
+    code: "CMTX-SALIK-5TM2X",
     points_cost: 150,
     discount_aed: 50,
     status: "ACTIVE",
@@ -164,12 +165,37 @@ export const seedVouchers: Voucher[] = [
     id: "voucher_2",
     user_id: "user_2",
     service: "RTA",
-    code: "RTA-8FH1D-6JN3Q",
+    code: "CMTX-RTA-8FH1D",
     points_cost: 120,
     discount_aed: 30,
     status: "ACTIVE",
     created_at: new Date("2024-01-17"),
     expires_at: new Date("2024-02-17"),
     description: "30 AED discount on RTA parking",
+  },
+  // Driver Vouchers (Manar - user_3)
+  {
+    id: "voucher_3",
+    user_id: "user_3",
+    service: "ADNOC",
+    code: "CMTX-ADNOC-7KL9X",
+    points_cost: 100,
+    discount_aed: 40,
+    status: "ACTIVE",
+    created_at: new Date("2024-01-19"),
+    expires_at: new Date("2024-02-19"),
+    description: "40 AED discount on ADNOC fuel",
+  },
+  {
+    id: "voucher_4",
+    user_id: "user_3",
+    service: "SALIK",
+    code: "CMTX-SALIK-2QR5W",
+    points_cost: 150,
+    discount_aed: 50,
+    status: "ACTIVE",
+    created_at: new Date("2024-01-16"),
+    expires_at: new Date("2024-02-16"),
+    description: "50 AED discount on Salik tolls",
   },
 ];
