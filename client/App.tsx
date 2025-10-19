@@ -5,13 +5,24 @@ import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import Intro from "./pages/Intro";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { FloatingCopilot } from "./components/FloatingCopilot";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
 const AppContent = () => {
   useEffect(() => {
@@ -27,6 +38,8 @@ const AppContent = () => {
     }
   }, []);
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -34,15 +47,30 @@ const AppContent = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Intro />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <FloatingCopilot />
+          {isAuthenticated && <FloatingCopilot />}
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
 };
 
-createRoot(document.getElementById("root")!).render(<AppContent />);
+const App = () => (
+  <AuthProvider>
+    <AppContent />
+  </AuthProvider>
+);
+
+createRoot(document.getElementById("root")!).render(<App />);

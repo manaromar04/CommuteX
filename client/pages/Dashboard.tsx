@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { TopNav } from "@/components/TopNav";
 import { TabLayout } from "@/components/TabLayout";
 import { SalmaCopilot } from "@/components/SalmaCopilot";
@@ -8,11 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { BookingModal } from "@/components/BookingModal";
 import { BookingSuccess } from "@/components/BookingSuccess";
 import { ParkingModal } from "@/components/ParkingModal";
-import { seedUsers, seedTrips, seedBookings } from "@shared/seeds";
+import { seedTrips, seedBookings } from "@shared/seeds";
 import { User, Trip, Booking } from "@shared/types";
-import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle } from "lucide-react";
+import { MapPin, Clock, Users, TrendingUp, Star, Zap, CheckCircle, AlertCircle, LogOut } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const { user: authUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("passenger");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -25,12 +29,18 @@ export default function Dashboard() {
   const [isParkingModalOpen, setIsParkingModalOpen] = useState(false);
 
   useEffect(() => {
-    // Initialize with seed data
-    const user = seedUsers[1]; // Huda - passenger by default
-    setCurrentUser(user);
+    // Initialize with authenticated user
+    if (authUser) {
+      setCurrentUser(authUser);
+    }
     setTrips(seedTrips);
     setBookings(seedBookings);
-  }, []);
+  }, [authUser]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const handleBookTrip = (trip: Trip) => {
     setSelectedTrip(trip);
