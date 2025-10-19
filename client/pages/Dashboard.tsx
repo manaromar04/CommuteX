@@ -44,7 +44,7 @@ export default function Dashboard() {
     } else if (userRole === "DRIVER") {
       setActiveTab("driver");
     } else if (userRole === "ADMIN") {
-      setActiveTab("passenger");
+      setActiveTab("admin");
     }
   }, [userRole]);
 
@@ -257,17 +257,121 @@ export default function Dashboard() {
 
   const driverContent = (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Driver Dashboard</CardTitle>
-          <CardDescription>Manage your trips and earnings</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-12 text-muted-foreground">
-            Switch to Driver role to view driver features
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Wallet Balance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-primary">
+              {currentUser?.wallet_balance_aed} AED
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Available funds</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Reward Points</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-yellow-500">
+              {currentUser?.reward_points}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Total earned</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Tier Level</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Badge className={`${getTierColor(currentUser?.tier || "")} text-white`}>
+              {currentUser?.tier}
+            </Badge>
+            <p className="text-xs text-muted-foreground mt-1">Member status</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium">Active Trips</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-500">0</div>
+            <p className="text-xs text-muted-foreground mt-1">Ongoing</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Car className="h-5 w-5 text-primary" />
+              Post a Trip
+            </CardTitle>
+            <CardDescription>
+              Create a new carpool trip and earn money
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button className="w-full">Create New Trip</Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-primary" />
+              Booking Requests
+            </CardTitle>
+            <CardDescription>
+              Review and manage passenger booking requests
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              View Requests (0)
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              Earnings
+            </CardTitle>
+            <CardDescription>
+              Track your income and trip statistics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              View Earnings
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-primary" />
+              My Trips
+            </CardTitle>
+            <CardDescription>
+              View all your posted and completed trips
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">
+              View All Trips
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 
