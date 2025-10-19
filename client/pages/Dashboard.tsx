@@ -344,9 +344,12 @@ export default function Dashboard() {
 
     // Apply wallet updates
     let updatedUser = { ...currentUser };
+    let driverEarnings = 0;
+
     updates.forEach((update) => {
       if (update.userId === currentUser.id && update.type === "credit") {
         updatedUser.wallet_balance_aed += update.amountChange;
+        driverEarnings += update.amountChange;
       }
     });
 
@@ -362,12 +365,20 @@ export default function Dashboard() {
       status: "completed" as const,
     };
 
+    // Update user and trips
     setCurrentUser(updatedUser);
     setTrips(trips.map((t) => (t.id === tripId ? updatedTrip : t)));
 
+    // Update bookings to completed status
+    setBookings(bookings.map((b) =>
+      b.trip_id === tripId
+        ? { ...b, status: "COMPLETED" as const }
+        : b
+    ));
+
     toast({
-      title: "Trip Completed",
-      description: `Earned ${updatedUser.wallet_balance_aed - currentUser.wallet_balance_aed} AED from ${tripBookings.length} passengers`,
+      title: "Trip Completed Successfully! 🎉",
+      description: `You earned ${driverEarnings.toFixed(2)} AED (65% of fare). Wallet updated!`,
     });
   };
 
