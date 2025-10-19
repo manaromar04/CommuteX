@@ -22,6 +22,7 @@ import { useAuth } from "@/context/AuthContext";
 import { calculateCarpoolRewards } from "@/lib/rewards";
 import { settleTripPayments, getTripSettlementSummary } from "@/lib/tripCompletion";
 import { useToast } from "@/hooks/use-toast";
+import { HUBS, getHubById } from "@/lib/hubs";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function Dashboard() {
   const [isTripCompletionModalOpen, setIsTripCompletionModalOpen] = useState(false);
   const [selectedTripForCompletion, setSelectedTripForCompletion] = useState<Trip | null>(null);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const [selectedHubConfig, setSelectedHubConfig] = useState<typeof HUBS[0] | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
