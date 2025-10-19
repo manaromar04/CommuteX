@@ -9,6 +9,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 ## 🚀 Features
 
 ### For Drivers
+
 - **Trip Management**: Create, manage, and complete trips with real-time availability
 - **Smart Earnings**: Earn 65% commission per trip (RTA takes 35%)
 - **Booking Requests**: Accept/reject passenger requests with detailed information
@@ -18,6 +19,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Voucher Redemption**: Redeem points for Salik and RTA discounts
 
 ### For Passengers
+
 - **Trip Search**: Find available rides by origin and destination
 - **Smart Booking**: Book seats with instant confirmation
 - **Wallet Integration**: Pay with wallet balance or add funds
@@ -28,6 +30,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Voucher Redemption**: Redeem rewards for fuel and parking discounts
 
 ### Admin Features
+
 - **Dashboard**: Monitor all trips, users, and transactions
 - **User Management**: Manage drivers, passengers, and their data
 - **Analytics**: View system metrics and performance
@@ -36,6 +39,7 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **React 18** - UI library
 - **React Router 6** - Client-side routing
 - **TypeScript** - Type safety
@@ -48,17 +52,20 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 - **Recharts** - Data visualization
 
 ### Backend
+
 - **Express.js** - Web server
 - **Node.js** - Runtime
 - **TypeScript** - Type safety
 - **Zod** - API validation
 
 ### Testing & Quality
+
 - **Vitest** - Unit testing
 - **TypeScript** - Type checking
 - **Prettier** - Code formatting
 
 ### Deployment
+
 - **Netlify** - Hosting & CI/CD
 - **Vite** - Production builds
 
@@ -112,18 +119,21 @@ A modern, full-stack ride-sharing and carpooling application designed to revolut
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - pnpm (npm install -g pnpm)
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/commutex.git
    cd commutex
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
@@ -183,17 +193,21 @@ pnpm start
 ## 💳 Commission & Pricing Model
 
 ### Trip Commission Split (65/35)
+
 When a passenger books a trip:
+
 - **Driver receives**: 65% of fare amount
 - **RTA receives**: 35% of fare amount (platform commission)
 
 ### Example
+
 - Passenger pays: 100 AED
 - Driver gets: 65 AED (credited to wallet)
 - RTA gets: 35 AED
 - Driver wallet updates immediately after trip completion
 
 ### Reward Points System
+
 - **Carpool Trip (3+ passengers)**: 80 points per trip
 - **Park & Ride Booking**: 40 points per booking
 - **Bonus Multipliers**: Based on tier level (Bronze → Platinum)
@@ -203,6 +217,7 @@ When a passenger books a trip:
 The app uses role-based access control:
 
 ### Roles
+
 - **PASSENGER**: Can book trips, redeem vouchers, earn points
 - **DRIVER**: Can create trips, accept bookings, earn commission
 - **ADMIN**: Full system access, analytics, user management
@@ -210,16 +225,19 @@ The app uses role-based access control:
 ### Demo Credentials
 
 **Driver Account**
+
 - Email: `manar@email.com`
 - Role: Driver with active trips
 
 **Passenger Account**
+
 - Email: `huda@email.com`
 - Role: Passenger with bookings
 
 ## 📊 Data Models
 
 ### User
+
 ```typescript
 interface User {
   id: string;
@@ -235,6 +253,7 @@ interface User {
 ```
 
 ### Trip
+
 ```typescript
 interface Trip {
   id: string;
@@ -252,6 +271,7 @@ interface Trip {
 ```
 
 ### Booking
+
 ```typescript
 interface Booking {
   id: string;
@@ -295,6 +315,7 @@ All components are styled with TailwindCSS and support dark mode.
 ## 🧪 Testing
 
 Run tests with:
+
 ```bash
 pnpm test
 ```
@@ -345,6 +366,7 @@ We welcome contributions! Please follow these steps:
 6. Open a Pull Request
 
 ### Code Style
+
 - Use TypeScript for all new code
 - Follow the existing component patterns
 - Use Prettier for formatting
@@ -357,6 +379,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 👥 Support
 
 For issues and questions:
+
 - Open an issue on GitHub
 - Check existing documentation
 - Review the AGENTS.md for development guidelines
