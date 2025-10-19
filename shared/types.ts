@@ -25,6 +25,8 @@ export interface Trip {
   destination: string;
   departure_time: Date;
   fare_aed: number;
+  car_type?: "SEDAN" | "SUV" | "MINIVAN";
+  distance_km?: number;
   available_seats: number;
   current_passengers: number;
   status: "SCHEDULED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
