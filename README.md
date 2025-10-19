@@ -4,9 +4,6 @@
 
 A modern, full-stack ride-sharing and carpooling application designed to revolutionize transportation in the UAE. CommuteX connects drivers and passengers with intelligent trip matching, real-time tracking, and integrated loyalty rewards.
 
-![CommuteX Dashboard](https://img.shields.io/badge/status-active-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
-![Platform](https://img.shields.io/badge/platform-UAE-red)
 
 ##  Features
 
