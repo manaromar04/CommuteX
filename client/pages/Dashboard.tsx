@@ -503,6 +503,52 @@ export default function Dashboard() {
         </Card>
       </div>
 
+      {/* Active Vouchers */}
+      {vouchers.filter((v) => v.user_id === currentUser?.id && v.status === "ACTIVE").length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>🎟️ Active Vouchers</CardTitle>
+            <CardDescription>Your redeemed discount vouchers</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {vouchers
+                .filter((v) => v.user_id === currentUser?.id && v.status === "ACTIVE")
+                .map((voucher) => (
+                  <VoucherCard key={voucher.id} voucher={voucher} />
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Redeem Vouchers Button */}
+      <Card className="border-2 border-dashed">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5" />
+            Redeem Points for Discounts
+          </CardTitle>
+          <CardDescription>
+            Convert your reward points into Salik and RTA discounts
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              You have <strong>{currentUser?.reward_points} points</strong> available to redeem
+            </p>
+            <Button
+              onClick={() => setIsRedeemVouchersModalOpen(true)}
+              className="w-full"
+              size="lg"
+            >
+              Browse Discount Vouchers
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Recent Bookings */}
       {bookings.filter((b) => b.passenger_id === currentUser?.id).length > 0 && (
         <Card>
