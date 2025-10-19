@@ -160,8 +160,8 @@ export function RedeemVouchersModal({
           {/* Voucher Options */}
           <div className="space-y-3">
             <h3 className="font-semibold text-foreground">Available Vouchers</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {voucherOptions.map((option) => {
+            <div className={`grid ${isDriver ? "grid-cols-1 md:grid-cols-3" : "grid-cols-1 md:grid-cols-2"} gap-4`}>
+              {voucherList.map((option) => {
                 const isAffordable = userPoints >= option.points;
                 const isRedeemed = hasRedeemed(option.service);
 
