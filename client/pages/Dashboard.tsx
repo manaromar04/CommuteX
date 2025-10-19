@@ -621,7 +621,7 @@ export default function Dashboard() {
         <TabLayout
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          userRole={currentUser?.role}
+          userRole={userRole || "PASSENGER"}
           passengerContent={passengerContent}
           driverContent={driverContent}
           hubsContent={hubsContent}
