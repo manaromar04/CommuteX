@@ -544,72 +544,82 @@ export default function Dashboard() {
       <Card>
         <CardHeader>
           <CardTitle>Smart Hubs</CardTitle>
-          <CardDescription>Park & Ride locations across UAE</CardDescription>
+          <CardDescription>Park & Ride locations - Pay with Reward Points</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                name: "Sharjah Central Hub",
-                location: "Sharjah City Centre",
-                capacity: 500,
-                available: 120,
-              },
-              {
-                name: "Dubai Downtown Hub",
-                location: "BurJuman Complex",
-                capacity: 800,
-                available: 340,
-              },
-              {
-                name: "Dubai Airport Hub",
-                location: "Terminal 3 Parking",
-                capacity: 1000,
-                available: 450,
-              },
-              {
-                name: "Abu Dhabi Main Hub",
-                location: "Zayed City Centre",
-                capacity: 600,
-                available: 200,
-              },
-            ].map((hub) => (
-              <Card key={hub.name} className="bg-muted/50">
+            {HUBS.map((hub) => (
+              <Card key={hub.id} className="bg-muted/50 border">
                 <CardContent className="pt-6 space-y-3">
-                  <h4 className="font-semibold text-foreground">{hub.name}</h4>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {hub.location}
-                  </p>
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-foreground">{hub.name}</h4>
+                    <p className="text-xs text-muted-foreground">{hub.location}</p>
+                  </div>
+
+                  {/* Parking Cost */}
+                  <div className="bg-yellow-50 dark:bg-yellow-950/30 p-2 rounded flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-yellow-600" />
+                    <div className="text-xs">
+                      <p className="font-semibold text-yellow-900 dark:text-yellow-100">
+                        {hub.parking_points_cost} points / {hub.parking_duration_hours}h
+                      </p>
+                      {hub.peak_hours && (
+                        <p className="text-yellow-800 dark:text-yellow-200">
+                          Peak: +{Math.round((hub.peak_hours.multiplier - 1) * 100)}%
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bonus Points */}
+                  <div className="bg-green-50 dark:bg-green-950/30 p-2 rounded text-xs">
+                    <p className="text-green-900 dark:text-green-100 font-medium">
+                      🎁 +{hub.bonus_points_on_metro_usage} pts for metro/bus
+                    </p>
+                  </div>
+
+                  {/* Availability */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
-                      <span>Availability</span>
-                      <span className="font-semibold">
+                      <span className="text-muted-foreground">Availability</span>
+                      <span className="font-semibold text-foreground">
                         {hub.available}/{hub.capacity}
                       </span>
                     </div>
                     <div className="w-full bg-border rounded-full h-2">
                       <div
-                        className="bg-primary h-2 rounded-full"
+                        className={`h-2 rounded-full ${
+                          (hub.available / hub.capacity) * 100 > 50
+                            ? "bg-green-500"
+                            : "bg-orange-500"
+                        }`}
                         style={{
                           width: `${(hub.available / hub.capacity) * 100}%`,
                         }}
                       />
                     </div>
                   </div>
+
                   <Button
                     size="sm"
                     className="w-full"
                     onClick={() => {
                       setSelectedHub({
-                        ...hub,
+                        name: hub.name,
+                        location: hub.location,
+                        capacity: hub.capacity,
                         current_vehicles: hub.capacity - hub.available,
                       });
+                      setSelectedHubConfig(hub);
                       setIsParkingModalOpen(true);
                     }}
-                    disabled={hub.available === 0}
+                    disabled={hub.available === 0 || !currentUser || currentUser.reward_points < hub.parking_points_cost}
                   >
-                    {hub.available > 0 ? "Book Parking" : "Full"}
+                    {hub.available === 0
+                      ? "Full"
+                      : currentUser && currentUser.reward_points < hub.parking_points_cost
+                      ? "Not Enough Points"
+                      : "Book Parking"}
                   </Button>
                 </CardContent>
               </Card>
