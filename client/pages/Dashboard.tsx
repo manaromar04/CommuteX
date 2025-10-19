@@ -1186,10 +1186,7 @@ export default function Dashboard() {
       <BookingRequestsModal
         open={isBookingRequestsModalOpen}
         onOpenChange={setIsBookingRequestsModalOpen}
-        bookingRequests={bookingRequests.filter((br) => {
-          const trip = trips.find((t) => t.id === br.tripId);
-          return trip && trip.driver_id === currentUser?.id;
-        })}
+        bookingRequests={bookingRequests}
         onConfirmBooking={(bookingId) => {
           const req = bookingRequests.find((r) => r.id === bookingId);
           if (req) {
