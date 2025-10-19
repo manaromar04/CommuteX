@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Copy, Check, Tag } from "lucide-react";
 
-type ServiceType = "SALIK" | "RTA";
+type ServiceType = "SALIK" | "RTA" | "ADNOC";
 
 interface VoucherOption {
   service: ServiceType;
@@ -27,9 +27,10 @@ interface RedeemVouchersModalProps {
   onOpenChange: (open: boolean) => void;
   userPoints: number;
   onRedeem: (service: ServiceType, pointsCost: number, discount: number) => void;
+  isDriver?: boolean;
 }
 
-const voucherOptions: VoucherOption[] = [
+const passengerVouchers: VoucherOption[] = [
   {
     service: "SALIK",
     points: 150,
@@ -47,6 +48,35 @@ const voucherOptions: VoucherOption[] = [
     validDays: 30,
   },
 ];
+
+const driverVouchers: VoucherOption[] = [
+  {
+    service: "SALIK",
+    points: 150,
+    discount: 50,
+    icon: "🚗",
+    description: "Get 50 AED discount on toll charges",
+    validDays: 30,
+  },
+  {
+    service: "RTA",
+    points: 120,
+    discount: 30,
+    icon: "🅿️",
+    description: "Get 30 AED discount on parking fees",
+    validDays: 30,
+  },
+  {
+    service: "ADNOC",
+    points: 100,
+    discount: 40,
+    icon: "⛽",
+    description: "Get 40 AED discount on fuel",
+    validDays: 30,
+  },
+];
+
+const voucherOptions = driverVouchers;
 
 export function RedeemVouchersModal({
   open,
