@@ -63,6 +63,19 @@ export default function Dashboard() {
     setUsers(seedUsers);
   }, [authUser]);
 
+  // Sync currentUser wallet when users array updates
+  useEffect(() => {
+    if (currentUser && users.length > 0) {
+      const updatedUser = users.find((u) => u.id === currentUser.id);
+      if (updatedUser && updatedUser.wallet_balance_aed !== currentUser.wallet_balance_aed) {
+        setCurrentUser({
+          ...currentUser,
+          wallet_balance_aed: updatedUser.wallet_balance_aed,
+        });
+      }
+    }
+  }, [users]);
+
   // Set default active tab based on role
   useEffect(() => {
     if (userRole === "PASSENGER") {
